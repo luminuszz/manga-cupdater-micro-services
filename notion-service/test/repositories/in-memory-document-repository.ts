@@ -25,4 +25,10 @@ export class InMemoryDocumentRepository implements DocumentRepository {
   async findAllDocumentWithUnreadStatus(): Promise<Document[]> {
     return this.documents.filter((item) => item.status === 'unread');
   }
+
+  async findDocumentByName(name: string): Promise<Document | null> {
+    const document = this.documents.find((item) => item.name === name);
+
+    return document || null;
+  }
 }

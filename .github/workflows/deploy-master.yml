@@ -21,4 +21,4 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           script: |
-            cd apps/manga-chapter-services && git pull origin master && docker compose  -f docker-compose.yml up --build -d
+            cd apps/manga-cupdater-micro-services && git pull origin master && docker compose  -f docker-compose.yml up --build -d

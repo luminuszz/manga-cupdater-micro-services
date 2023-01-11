@@ -6,13 +6,17 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class UpdateToReadDocumentStatus {
   constructor(private readonly documentRepository: DocumentRepository) {}
-  async execute({ status, id }: UpdateToReadDocumentStatusDto) {
+  async execute({ status, id, newChapter }: UpdateToReadDocumentStatusDto) {
     const document = await this.documentRepository.findDocumentById(id);
 
     if (!document) {
       throw new NotFoundDocumentError();
     }
 
-    await this.documentRepository.updateDocumentStatus(document.id, status);
+    await this.documentRepository.updateDocumentStatus(
+      document.id,
+      status,
+      newChapter,
+    );
   }
 }

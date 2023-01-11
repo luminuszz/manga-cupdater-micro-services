@@ -2,8 +2,9 @@ import { Inject, Injectable } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bull';
 import { CheckWithExistsNewChapterDto } from './jobs/find-comic-cap-by-url';
 import { Queue } from 'bull';
-import { Client, ClientKafka, Transport } from '@nestjs/microservices';
+import { ClientKafka } from '@nestjs/microservices';
 import { BROKER_PROVIDER } from './providers/broker.provider';
+import { isNumber } from 'lodash';
 
 type NotifyCapNewCapEvent = {
   id: string;
@@ -12,7 +13,11 @@ type NotifyCapNewCapEvent = {
   name: string;
 };
 export type Status = 'read' | 'unread';
-type UpdateCapStatusEvent = { id: string; status: Status };
+type UpdateCapStatusEvent = { id: string; status: Status; newChapter?: number };
+
+export class NotifyNewCapEventCommand {
+  constructor(props: { data: NotifyCapNewCapEvent; topic: string }) {}
+}
 
 @Injectable()
 export class ScrapingService {
@@ -32,6 +37,9 @@ export class ScrapingService {
     const payload: UpdateCapStatusEvent = {
       id: data.id,
       status: data.newChapter ? 'unread' : 'read',
+      newChapter: isNumber(data.newChapter)
+        ? data.newChapter
+        : Number(data.newChapter.replace(/\D/g, '')),
     };
 
     this.client.emit('document.updateStatus', payload);

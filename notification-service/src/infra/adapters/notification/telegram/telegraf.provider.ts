@@ -6,8 +6,9 @@ export const TELEGRAF_PROVIDER_TOKEN = 'TELEGRAF_PROVIDER_TOKEN';
 
 export const TelegrafSdkProvider: Provider = {
   provide: TELEGRAF_PROVIDER_TOKEN,
-  useFactory: (configService: ConfigService) =>
-    new Telegraf(configService.get<string>('TELEGRAM_NOTIFICATION_BOT')),
+  useFactory: (configService: ConfigService) => {
+    return new Telegraf(configService.get<string>('TELEGRAM_NOTIFICATION_BOT'));
+  },
 
   inject: [ConfigService],
 };

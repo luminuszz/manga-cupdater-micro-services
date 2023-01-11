@@ -1,7 +1,7 @@
 import { Notification } from '../entities/notification';
 import { NotificationRepository } from '@app/repositories/notification-repository';
 import { Injectable } from '@nestjs/common';
-import { NotificationProvider } from '@app/adapters/notification-provider';
+import { NotificationProvider } from '@app/ports/notification-provider';
 
 type SendNotificationDto = {
   recipient_id: string;
@@ -26,9 +26,9 @@ export class SendNotification {
       recipient_id,
     });
 
-    await this.notificationRepository.create(notification);
-
     await this.notificationProvider.sendNotification({ content, recipient_id });
+
+    await this.notificationRepository.create(notification);
 
     return {
       notification,

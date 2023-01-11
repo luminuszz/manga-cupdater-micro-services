@@ -10,8 +10,11 @@ export type NotificationProps = {
 export class Notification {
   private readonly _id: string;
 
+  private readonly _created_at: Date;
+
   constructor(private readonly props: NotificationProps) {
     this._id = randomUUID();
+    this._created_at = new Date();
   }
 
   get recipient_id(): string {
@@ -31,5 +34,9 @@ export class Notification {
 
   get id(): string {
     return this._id;
+  }
+
+  get created_at(): Date {
+    return this.created_at;
   }
 }

@@ -2,10 +2,7 @@ FROM node:18-alpine3.16
 
 WORKDIR /home/services/notification-service
 
-
-
 COPY package.json .
-
 
 RUN yarn install
 

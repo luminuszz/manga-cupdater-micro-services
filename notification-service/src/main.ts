@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
-async function bootstrap() {
+(async () => {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
     AppModule,
     {
@@ -10,11 +10,14 @@ async function bootstrap() {
       options: {
         client: {
           clientId: 'notification-service',
+
           retry: {
-            retries: 2,
+            retries: 5,
+            maxRetryTime: 5000,
+            multiplier: 2,
           },
 
-          brokers: ['broker:29092'],
+          brokers: [process.env.KAFKA_CONECT_URL],
         },
 
         consumer: {
@@ -24,5 +27,4 @@ async function bootstrap() {
     },
   );
   await app.listen();
-}
-bootstrap();
+})();

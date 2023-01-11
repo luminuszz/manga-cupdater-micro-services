@@ -9,12 +9,12 @@ export const BrokerProvider: Provider = {
       transport: Transport.KAFKA,
       options: {
         client: {
-          clientId: 'task-service-client',
-          brokers: ['broker:29092'],
+          clientId: 'notification-service-client',
+          brokers: ['139.144.184.180:9092'],
         },
 
         consumer: {
-          groupId: 'task-service-consumer',
+          groupId: 'notification-service-consumer',
         },
       },
     });

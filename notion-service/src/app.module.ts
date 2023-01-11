@@ -7,6 +7,7 @@ import { NotionDocumentRepository } from '@infra/database/notion/notion-document
 import { UpdateToReadDocumentStatus } from '@app/useCases/update-to-read-document-status';
 import { ConfigModule } from '@nestjs/config';
 import { FindAllDocumentsUnread } from '@app/useCases/find-all-documents-unread';
+import { FindDocumentByName } from '@app/useCases/find-document-by-name';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { FindAllDocumentsUnread } from '@app/useCases/find-all-documents-unread'
     FindDocumentById,
     UpdateToReadDocumentStatus,
     FindAllDocumentsUnread,
+    FindDocumentByName,
   ],
 })
 export class AppModule {}

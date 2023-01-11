@@ -79,15 +79,9 @@ export class FindComicCapByUrlJob {
   async execute({
     data: { cap, url, name, id },
   }: Job<CheckWithExistsNewChapterDto>): Promise<JobResponse> {
+    const browser = await this.initializeBrowser();
+
     try {
-      this._logger.debug(`Starting job for ${name} - ${url}`);
-
-      const browser = await this.initializeBrowser();
-
-      this._logger.debug(
-        `Browser initialized for ${name} - ${url} ${JSON.stringify(browser)}`,
-      );
-
       const page = await browser.newPage();
 
       this._logger.log(`Opening page ${url}`);
@@ -114,13 +108,6 @@ export class FindComicCapByUrlJob {
         html.includes(stringToMatch),
       );
 
-      console.log({
-        hasNewChapter: !!newChapter,
-        newChapter: newChapter || null,
-        stringsToMatch,
-        html,
-      });
-
       await browser.close();
 
       return {
@@ -136,12 +123,14 @@ export class FindComicCapByUrlJob {
     } catch (e) {
       this._logger.error(e);
       throw e;
+    } finally {
+      await browser.close();
     }
   }
 
   @OnQueueActive()
   async onJobInit(job: Job) {
-    this._logger.debug(`JobInit ${job.data.name} - ${job.data.url}`);
+    this._logger.log(`JobInit ${job.data.name} - ${job.data.url}`);
   }
 
   @OnQueueError()
@@ -155,12 +144,17 @@ export class FindComicCapByUrlJob {
       job.returnvalue as JobResponse;
 
     if (hasNewChapter) {
+      this._logger.log(
+        `New chapter found for ${name} - ${url} -> ${newChapter}`,
+      );
       await this.scrapingService.notifyNewChapter({
         id,
         url,
         name,
         newChapter,
       });
+    } else {
+      this._logger.debug(`No new chapter found for ${name} - ${url} `);
     }
   }
 }

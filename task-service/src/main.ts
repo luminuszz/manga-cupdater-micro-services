@@ -14,7 +14,7 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
             retries: 2,
           },
 
-          brokers: ['broker:29092'],
+          brokers: [process.env.KAFKA_CONECT_URL],
         },
 
         consumer: {

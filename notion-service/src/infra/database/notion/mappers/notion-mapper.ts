@@ -8,8 +8,8 @@ export type NotionDocument = {
 export class NotionMapper {
   static toDomain(notionDocument: NotionPage): Document {
     const parsedStatus = notionDocument.properties['CAPITULO NOVO'].checkbox
-      ? 'read'
-      : 'unread';
+      ? 'unread'
+      : 'read';
 
     return new Document(
       {

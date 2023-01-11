@@ -17,4 +17,5 @@ model Notification {
   type             String
   content          String
   recipient_id     String
+  created_at       DateTime
 }

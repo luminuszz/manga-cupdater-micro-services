@@ -23,7 +23,11 @@ export class NotionDocumentRepository implements DocumentRepository {
     return NotionMapper.toDomain(notionPage);
   }
 
-  public async updateDocumentStatus(id: string, status: Status): Promise<void> {
+  public async updateDocumentStatus(
+    id: string,
+    status: Status,
+    chapter?: number,
+  ): Promise<void> {
     await this.notion.pages.update({
       page_id: id,
       properties: {
@@ -32,6 +36,17 @@ export class NotionDocumentRepository implements DocumentRepository {
         },
       },
     });
+
+    if (chapter) {
+      await this.notion.pages.update({
+        page_id: id,
+        properties: {
+          cap: {
+            number: chapter,
+          },
+        },
+      });
+    }
   }
 
   async createDocument(document: Document): Promise<void> {
@@ -62,5 +77,22 @@ export class NotionDocumentRepository implements DocumentRepository {
     return response.results.map((item) =>
       NotionMapper.toDomain(item as NotionPage),
     );
+  }
+
+  async findDocumentByName(name: string): Promise<Document | null> {
+    const { results } = await this.notion.databases.query({
+      database_id: this.configService.get('NOTION_DATABASE_ID'),
+
+      filter: {
+        property: 'Name',
+        title: {
+          equals: name,
+        },
+      },
+    });
+
+    return results?.length
+      ? NotionMapper.toDomain(results[0] as NotionPage)
+      : null;
   }
 }

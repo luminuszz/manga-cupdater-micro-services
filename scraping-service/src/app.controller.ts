@@ -15,7 +15,6 @@ export class AppController {
   @EventPattern('scraping.find-comic-cap-by-url')
   async findComicCapByUrl(@Payload() data: FindComicCapByUrlEvent) {
     if (data && data.url && data.cap && data.name && data.id) {
-      console.log('valid data');
       await this.scrappingService.findComicCapByUrl(data);
     }
   }

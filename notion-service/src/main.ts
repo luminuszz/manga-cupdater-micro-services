@@ -12,7 +12,7 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
       transport: Transport.KAFKA,
       options: {
         client: {
-          brokers: ['broker:29092'],
+          brokers: [process.env.KAFKA_CONECT_URL],
         },
       },
     },
