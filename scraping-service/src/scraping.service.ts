@@ -15,10 +15,6 @@ type NotifyCapNewCapEvent = {
 export type Status = 'read' | 'unread';
 type UpdateCapStatusEvent = { id: string; status: Status; newChapter?: number };
 
-export class NotifyNewCapEventCommand {
-  constructor(props: { data: NotifyCapNewCapEvent; topic: string }) {}
-}
-
 @Injectable()
 export class ScrapingService {
   constructor(

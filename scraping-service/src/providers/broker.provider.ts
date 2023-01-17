@@ -10,12 +10,12 @@ export const BrokerProvider: Provider = {
       transport: Transport.KAFKA,
       options: {
         client: {
-          clientId: 'task-service-client',
+          clientId: 'scraping-service-client',
           brokers: [config.get<string>('KAFKA_CONECT_URL')],
         },
 
         consumer: {
-          groupId: 'task-service-consumer',
+          groupId: 'scraping-service-consumer',
         },
       },
     });

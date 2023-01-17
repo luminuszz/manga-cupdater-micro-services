@@ -1,16 +1,14 @@
 import { Module } from '@nestjs/common';
 import { NotificationProvider } from '@app/ports/notification-provider';
-import { TelegramNotificationService } from '@infra/adapters/notification/telegram/telegram-notification.service';
-import { TelegrafSdkProvider } from '@infra/adapters/notification/telegram/telegraf.provider';
-import { BrokerProvider } from '@infra/adapters/broker.provider';
+import { TelegramService } from '@infra/adapters/notification/telegram/telegram.service';
+import { TelegramModule } from '@infra/adapters/notification/telegram/telegram.module';
 
 @Module({
+  imports: [TelegramModule],
   providers: [
-    TelegrafSdkProvider,
-    BrokerProvider,
     {
       provide: NotificationProvider,
-      useClass: TelegramNotificationService,
+      useClass: TelegramService,
     },
   ],
 

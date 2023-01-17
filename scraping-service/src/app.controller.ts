@@ -13,9 +13,18 @@ type FindComicCapByUrlEvent = {
 export class AppController {
   constructor(private readonly scrappingService: ScrapingService) {}
   @EventPattern('scraping.find-comic-cap-by-url')
-  async findComicCapByUrl(@Payload() data: FindComicCapByUrlEvent) {
-    if (data && data.url && data.cap && data.name && data.id) {
-      await this.scrappingService.findComicCapByUrl(data);
-    }
+  async findComicCapByUrl(@Payload() data: FindComicCapByUrlEvent[]) {
+    console.log('event  findComicCapByUrl running');
+
+    console.log('data', data);
+
+    data.forEach((data) => {
+      this.scrappingService.findComicCapByUrl({
+        url: data.url,
+        name: data.name,
+        cap: data.cap,
+        id: data.id,
+      });
+    });
   }
 }

@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { DocumentRepository } from '@app/repositories/document-repository';
-import { UseCaseService } from '@app/useCases/useCase.type';
 
 import { Document } from '@app/entities/document.entitiy';
 
@@ -13,7 +12,7 @@ type Output = {
 };
 
 @Injectable()
-export class FindDocumentByName implements UseCaseService<Input, Output> {
+export class FindDocumentByName {
   constructor(private readonly documentRepository: DocumentRepository) {}
 
   async execute({ name }: Input): Promise<Output> {

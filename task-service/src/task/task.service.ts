@@ -27,7 +27,7 @@ export class TaskService implements OnModuleInit, OnModuleDestroy {
     await this.client.close();
   }
 
-  @Cron(CronExpression.EVERY_HOUR, {
+  @Cron(CronExpression.EVERY_30_MINUTES, {
     timeZone: 'America/Bahia',
   })
   async startComicsJobsTask() {
@@ -36,16 +36,14 @@ export class TaskService implements OnModuleInit, OnModuleDestroy {
     this.client
       .send('document.findAllUnread', {})
       .subscribe((response: FindAllUnreadResponseDto[]) => {
-        response.forEach(({ props }) => {
-          const payload = {
-            url: props.url,
-            name: props.name,
-            cap: props.cap,
-            id: props.id,
-          } satisfies FindComicCapByUrlEvent;
+        const commics = response.map<FindComicCapByUrlEvent>(({ props }) => ({
+          url: props.url,
+          name: props.name,
+          cap: props.cap,
+          id: props.id,
+        }));
 
-          this.client.emit('scraping.find-comic-cap-by-url', payload);
-        });
+        this.client.emit('scraping.find-comic-cap-by-url', commics);
       });
   }
 }

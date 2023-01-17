@@ -6,7 +6,9 @@ import { NotionPage } from '@infra/database/notion/dto/notion-page.dto';
 import { NotionMapper } from '@infra/database/notion/mappers/notion-mapper';
 import { Document, Status } from '@app/entities/document.entitiy';
 import { ConfigService } from '@nestjs/config';
+import { format } from 'date-fns-tz';
 
+import { ptBR } from 'date-fns/locale';
 @Injectable()
 export class NotionDocumentRepository implements DocumentRepository {
   constructor(
@@ -33,6 +35,20 @@ export class NotionDocumentRepository implements DocumentRepository {
       properties: {
         'CAPITULO NOVO': {
           checkbox: status === 'unread',
+        },
+
+        Notas: {
+          rich_text: [
+            {
+              text: {
+                content: `Edited my manga-update in ${format(
+                  new Date(),
+                  "dd/MM/yyyy 'in' HH:mm",
+                  { locale: ptBR, timeZone: 'America/Fortaleza' },
+                )})} operation => new_chapter`,
+              },
+            },
+          ],
         },
       },
     });
@@ -86,7 +102,7 @@ export class NotionDocumentRepository implements DocumentRepository {
       filter: {
         property: 'Name',
         title: {
-          equals: name,
+          contains: name,
         },
       },
     });
