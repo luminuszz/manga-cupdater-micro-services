@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Logger } from '@nestjs/common';
 import { SendNotification } from '@app/useCases/send-notification';
 import { EventPattern, Payload } from '@nestjs/microservices';
 
@@ -13,9 +13,11 @@ export type ChapterUpdateEvent = {
 export class NotificationController {
   constructor(private readonly sendNotification: SendNotification) {}
 
+  private logger = new Logger(NotificationController.name);
+
   @EventPattern('notification.chapter.updated')
   async chapterUpdated(@Payload() data: ChapterUpdateEvent) {
-    console.log('recieved chapter updated event ', data.name);
+    this.logger.log(`recieved chapter updated event  -> ${data.name}`);
 
     await this.sendNotification.execute({
       content: JSON.stringify(data),

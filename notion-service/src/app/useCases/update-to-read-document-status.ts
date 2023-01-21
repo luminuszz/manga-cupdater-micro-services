@@ -13,6 +13,10 @@ export class UpdateToReadDocumentStatus {
       throw new NotFoundDocumentError();
     }
 
+    console.log({
+      status,
+    });
+
     await this.documentRepository.updateDocumentStatus(
       document.id,
       status,

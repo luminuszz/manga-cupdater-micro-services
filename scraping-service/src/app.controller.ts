@@ -12,12 +12,9 @@ type FindComicCapByUrlEvent = {
 @Controller()
 export class AppController {
   constructor(private readonly scrappingService: ScrapingService) {}
-  @EventPattern('scraping.find-comic-cap-by-url')
+
+  @EventPattern('tasks.jobs.findForNewChapters')
   async findComicCapByUrl(@Payload() data: FindComicCapByUrlEvent[]) {
-    console.log('event  findComicCapByUrl running');
-
-    console.log('data', data);
-
     data.forEach((data) => {
       this.scrappingService.findComicCapByUrl({
         url: data.url,

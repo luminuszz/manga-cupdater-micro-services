@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { telegrafProviderResolver } from '@infra/adapters/notification/telegram/telegraf.provider';
 import { TelegramService } from '@infra/adapters/notification/telegram/telegram.service';
-import { BrokerProvider } from '@infra/tcp/broker.provider';
+import { MessagingModule } from '@infra/messaging/messaging.module';
 
 @Module({
-  imports: [],
-  providers: [telegrafProviderResolver, TelegramService, BrokerProvider],
-  exports: [TelegramService, telegrafProviderResolver, BrokerProvider],
+  imports: [MessagingModule],
+  providers: [telegrafProviderResolver, TelegramService],
+  exports: [TelegramService, telegrafProviderResolver],
 })
 export class TelegramModule {}

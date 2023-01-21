@@ -1,39 +1,27 @@
 import {
-  Inject,
   Injectable,
+  Logger,
   OnModuleDestroy,
   OnModuleInit,
 } from '@nestjs/common';
-import { ClientKafka } from '@nestjs/microservices';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { FindAllUnreadResponseDto } from './dto/find-all-unread-response.dto';
 import { FindComicCapByUrlEvent } from './dto/find-comicby-url-event.dto';
-import { BROKER_PROVIDER } from '../broker.provider';
+import { KafkaService } from '../messaging/kafka.service';
 
 @Injectable()
-export class TaskService implements OnModuleInit, OnModuleDestroy {
-  constructor(
-    @Inject(BROKER_PROVIDER)
-    private readonly client: ClientKafka,
-  ) {}
+export class TaskService {
+  constructor(private readonly kafka: KafkaService) {}
 
-  async onModuleInit(): Promise<void> {
-    this.client.subscribeToResponseOf('document.findAllUnread');
-
-    await this.client.connect();
-  }
-
-  async onModuleDestroy() {
-    await this.client.close();
-  }
+  private logger = new Logger(TaskService.name);
 
   @Cron(CronExpression.EVERY_30_MINUTES, {
     timeZone: 'America/Bahia',
   })
   async startComicsJobsTask() {
-    console.log('running', 'startComicsJobsTask');
+    this.logger.log('Start comics jobs task');
 
-    this.client
+    this.kafka
       .send('document.findAllUnread', {})
       .subscribe((response: FindAllUnreadResponseDto[]) => {
         const commics = response.map<FindComicCapByUrlEvent>(({ props }) => ({
@@ -43,7 +31,7 @@ export class TaskService implements OnModuleInit, OnModuleDestroy {
           id: props.id,
         }));
 
-        this.client.emit('scraping.find-comic-cap-by-url', commics);
+        this.kafka.emit('tasks.jobs.findForNewChapters', commics);
       });
   }
 }

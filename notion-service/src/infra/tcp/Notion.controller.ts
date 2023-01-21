@@ -38,18 +38,6 @@ export class NotionController {
     return await this.findDocumentById.execute(id);
   }
 
-  @EventPattern('document.updateStatus')
-  async updateDocumentStatus(
-    @Payload()
-    { id, status, newChapter }: UpdateDocumentStatusEvent,
-  ) {
-    this.logger.log(
-      `recvied message with id ${id} -> document.updateStatus -> ${new Date()}`,
-    );
-
-    await this.updateToReadDocumentStatus.execute({ id, status, newChapter });
-  }
-
   @MessagePattern('document.findAllUnread')
   async findAllWithUnreadStatus() {
     this.logger.log(
@@ -68,5 +56,16 @@ export class NotionController {
     return await this.findDocumentByName.execute({
       name,
     });
+  }
+
+  @EventPattern('scraping.newChapterFound')
+  async onNewChapterFound(@Payload() payload: UpdateDocumentStatusEvent) {
+    this.logger.log(
+      `recvied message with id ${
+        payload.id
+      } -> scraping.newChapterFound -> ${new Date()}`,
+    );
+
+    await this.updateToReadDocumentStatus.execute(payload);
   }
 }

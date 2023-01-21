@@ -12,7 +12,8 @@ import { ptBR } from 'date-fns/locale';
 @Injectable()
 export class NotionDocumentRepository implements DocumentRepository {
   constructor(
-    @Inject(NOTION_CLIENT_PROVIDER_TOKEN) private readonly notion: Client,
+    @Inject(NOTION_CLIENT_PROVIDER_TOKEN)
+    private readonly notion: Client,
 
     private readonly configService: ConfigService<Env>,
   ) {}
@@ -35,20 +36,6 @@ export class NotionDocumentRepository implements DocumentRepository {
       properties: {
         'CAPITULO NOVO': {
           checkbox: status === 'unread',
-        },
-
-        Notas: {
-          rich_text: [
-            {
-              text: {
-                content: `Edited my manga-update in ${format(
-                  new Date(),
-                  "dd/MM/yyyy 'in' HH:mm",
-                  { locale: ptBR, timeZone: 'America/Fortaleza' },
-                )})} operation => new_chapter`,
-              },
-            },
-          ],
         },
       },
     });

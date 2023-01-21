@@ -1,16 +1,10 @@
 import { Module } from '@nestjs/common';
 import { TaskModule } from './task/task.module';
 import { ScheduleModule } from '@nestjs/schedule';
-import { ConfigModule } from '@nestjs/config';
+import { MessagingModule } from './messaging/messaging.module';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }),
-    TaskModule,
-    ScheduleModule.forRoot(),
-  ],
+  imports: [ScheduleModule.forRoot(), TaskModule, MessagingModule],
   controllers: [],
   providers: [],
 })

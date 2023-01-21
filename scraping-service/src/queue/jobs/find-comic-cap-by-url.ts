@@ -11,7 +11,7 @@ import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import { find } from 'lodash';
 import { Job } from 'bull';
 import { Logger } from '@nestjs/common';
-import { ScrapingService } from '../scraping.service';
+import { ScrapingService } from '../../scraping.service';
 
 export type CheckWithExistsNewChapterDto = {
   id: string;
@@ -32,9 +32,9 @@ type JobResponse = {
   id: string;
 };
 
-export const JobName = 'find-comic-cap-by-url';
+export const findComicCapByUrlJobToken = 'find-comic-cap-by-url';
 
-@Processor('find-comic-cap-by-url')
+@Processor(findComicCapByUrlJobToken)
 export class FindComicCapByUrlJob {
   private readonly _logger = new Logger(FindComicCapByUrlJob.name);
 

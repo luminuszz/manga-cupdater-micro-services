@@ -1,10 +1,9 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bull';
-import { CheckWithExistsNewChapterDto } from './jobs/find-comic-cap-by-url';
+import { CheckWithExistsNewChapterDto } from './queue/jobs/find-comic-cap-by-url';
 import { Queue } from 'bull';
-import { ClientKafka } from '@nestjs/microservices';
-import { BROKER_PROVIDER } from './providers/broker.provider';
 import { isNumber } from 'lodash';
+import { KafkaService } from './messaging/kafka.service';
 
 type NotifyCapNewCapEvent = {
   id: string;
@@ -21,8 +20,7 @@ export class ScrapingService {
     @InjectQueue('find-comic-cap-by-url')
     private readonly findComicCapByUrlQueue: Queue<CheckWithExistsNewChapterDto>,
 
-    @Inject(BROKER_PROVIDER)
-    private readonly client: ClientKafka,
+    private readonly client: KafkaService,
   ) {}
 
   public async findComicCapByUrl(data: CheckWithExistsNewChapterDto) {
@@ -33,13 +31,10 @@ export class ScrapingService {
     const payload: UpdateCapStatusEvent = {
       id: data.id,
       status: data.newChapter ? 'unread' : 'read',
-      newChapter: isNumber(data.newChapter)
-        ? data.newChapter
-        : Number(data.newChapter.replace(/\D/g, '')),
     };
 
-    this.client.emit('document.updateStatus', payload);
-
     this.client.emit('notification.chapter.updated', data);
+
+    this.client.emit('scraping.newChapterFound', payload);
   }
 }

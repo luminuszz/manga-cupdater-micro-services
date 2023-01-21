@@ -11,9 +11,8 @@ import {
 import { TELEGRAF_PROVIDER_TOKEN } from '@infra/adapters/notification/telegram/telegraf.provider';
 import { Telegraf } from 'telegraf';
 import { ConfigService } from '@nestjs/config';
-import { ClientKafka } from '@nestjs/microservices';
-import { BROKER_PROVIDER } from '@infra/tcp/broker.provider';
 import { FindDocumentByNameResposeEvent } from '@infra/adapters/notification/telegram/dto/find-document-by-name-respose-event';
+import { KafkaService } from '@infra/messaging/kafka.service';
 
 type MessageBody = {
   url: string;
@@ -30,8 +29,7 @@ export class TelegramService
     @Inject(TELEGRAF_PROVIDER_TOKEN)
     private readonly telegraf: Telegraf,
     private readonly configService: ConfigService,
-    @Inject(BROKER_PROVIDER)
-    private readonly brokerService: ClientKafka,
+    private readonly brokerService: KafkaService,
   ) {
     this.telegraf.command('finishCap', this.onChapterRead.bind(this));
   }

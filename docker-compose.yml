@@ -39,6 +39,11 @@ services:
   task_service:
     container_name: chapter_updater_task_service
     restart: always
+    ports:
+      - "3001:3001"
+    build:
+      context: task-service
+      dockerfile: ./dockerfile
     env_file:
       - ./.env
     environment:
@@ -49,9 +54,18 @@ services:
       - TELEGRAM_NOTIFICATION_BOT=${TELEGRAM_NOTIFICATION_BOT}
       - TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID}
 
-    build:
-      context: task-service
-      dockerfile: ./dockerfile
+
+  kafka_ui:
+    image: provectuslabs/kafka-ui:latest
+    ports:
+      - 8080:8080
+    environment:
+      KAFKA_CLUSTERS_0_ZOOKEEPER: 139.144.184.180:2181
+      KAFKA_CLUSTERS_0_NAME: cloud_broker
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: 139.144.184.180:9092
+
+
+
 
 
 
