@@ -6,6 +6,8 @@ import { Status } from '@app/entities/document.entitiy';
 import { FindAllDocumentsUnread } from '@app/useCases/find-all-documents-unread';
 import { FindDocumentByName } from '@app/useCases/find-document-by-name';
 import { SyncPrismaToNotionBatch } from '@infra/database/batchs/syncPrismaToNotion.batch';
+import { NotionDocumentRepository } from '@infra/database/notion/repositories/notion-document-repository';
+import { SyncNotionDatabaseBatch } from '@infra/database/batchs/syncNotionDatabase.batch';
 
 type UpdateDocumentStatusEvent = {
   id: string;
@@ -30,6 +32,8 @@ export class DocumentController {
     private readonly findAllDocumentsUnread: FindAllDocumentsUnread,
     private findDocumentByName: FindDocumentByName,
     private readonly syncPrismaToNotionBatch: SyncPrismaToNotionBatch,
+
+    private readonly syncNotionDatabase: SyncNotionDatabaseBatch,
   ) {}
   @MessagePattern('document.getById')
   async getDocumentById(@Payload() { id }: FindDocumentByIdEvent) {
@@ -69,6 +73,8 @@ export class DocumentController {
     );
 
     await this.updateToReadDocumentStatus.execute(payload);
+
+    await this.syncNotionDatabase.execute(payload.id, payload.status);
   }
 
   @EventPattern('tasks.jobs.syncDatabase')

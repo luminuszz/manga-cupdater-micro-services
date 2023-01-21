@@ -8,6 +8,7 @@ export const BullModuleConfig: SharedBullAsyncConfiguration = {
       host: config.get('REDIS_HOST' as keyof Env),
       password: config.get('REDIS_PASSWORD' as keyof Env),
     },
+
     defaultJobOptions: {
       removeOnComplete: true,
     },

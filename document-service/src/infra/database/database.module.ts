@@ -6,6 +6,7 @@ import { PrismaDocumentRepository } from '@infra/database/prisma/repositories/pr
 import { PrismaModule } from '@infra/database/prisma/prisma.module';
 import { BatchModule } from '@infra/database/batchs/batch.module';
 import { SyncPrismaToNotionBatch } from '@infra/database/batchs/syncPrismaToNotion.batch';
+import { SyncNotionDatabaseBatch } from '@infra/database/batchs/syncNotionDatabase.batch';
 
 @Module({
   imports: [NotionModule, PrismaModule, BatchModule],
@@ -19,8 +20,17 @@ import { SyncPrismaToNotionBatch } from '@infra/database/batchs/syncPrismaToNoti
       provide: SyncPrismaToNotionBatch,
       useClass: SyncPrismaToNotionBatch,
     },
+
+    {
+      provide: SyncNotionDatabaseBatch,
+      useClass: SyncNotionDatabaseBatch,
+    },
   ],
 
-  exports: [DocumentRepository, SyncPrismaToNotionBatch],
+  exports: [
+    DocumentRepository,
+    SyncPrismaToNotionBatch,
+    SyncNotionDatabaseBatch,
+  ],
 })
 export class DatabaseModule {}

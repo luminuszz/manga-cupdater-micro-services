@@ -36,6 +36,9 @@ export class PrismaDocumentRepository implements DocumentRepository {
       data: {
         status: PrismaDocumentMapper.parseStatusEnumPrisma(status),
         cap: chapter,
+        hasNewChapter:
+          PrismaDocumentMapper.parseStatusEnumPrisma(status) ===
+          PrismaStatus.UNREAD,
       },
     });
   }
@@ -94,7 +97,9 @@ export class PrismaDocumentRepository implements DocumentRepository {
         url: document.url,
         notion_id: document.recipientId,
         cap: document.cap,
-        hasNewChapter: document.cap > document.nextCap,
+        hasNewChapter:
+          PrismaDocumentMapper.parseStatusEnumPrisma(document.status) ===
+          PrismaStatus.UNREAD,
       } satisfies Omit<PrismaDocument, 'updatedAt' | 'id'>;
 
       this.logger.log(`Syncing document ${document.name} to prisma database`);
