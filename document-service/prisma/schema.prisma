@@ -1,0 +1,30 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+
+
+enum Status {
+  READ
+  UNREAD
+}
+
+model  Document {
+  id               String @id @default(auto()) @map("_id") @db.ObjectId
+  name             String @unique
+  url              String
+  hasNewChapter    Boolean @default(false)
+  cap              Float
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  notion_id        String   @unique
+  status           Status   @default(UNREAD)
+}

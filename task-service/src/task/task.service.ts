@@ -15,7 +15,7 @@ export class TaskService {
 
   private logger = new Logger(TaskService.name);
 
-  @Cron(CronExpression.EVERY_30_MINUTES, {
+  @Cron(CronExpression.EVERY_HOUR, {
     timeZone: 'America/Bahia',
   })
   async startComicsJobsTask() {
@@ -33,5 +33,11 @@ export class TaskService {
 
         this.kafka.emit('tasks.jobs.findForNewChapters', commics);
       });
+  }
+
+  async startSyncDatabaseBatch() {
+    this.logger.log('Start sync database batch');
+
+    this.kafka.emit('tasks.jobs.syncDatabase', {});
   }
 }

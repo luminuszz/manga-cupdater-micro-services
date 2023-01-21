@@ -9,4 +9,9 @@ export class TaskController {
   async initTask() {
     await this.taskService.startComicsJobsTask();
   }
+
+  @Get('sync')
+  async syncTaskDatabaseJob() {
+    await this.taskService.startSyncDatabaseBatch();
+  }
 }
