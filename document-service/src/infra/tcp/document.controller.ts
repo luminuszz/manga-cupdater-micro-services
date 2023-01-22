@@ -5,9 +5,9 @@ import { UpdateToReadDocumentStatus } from '@app/useCases/update-to-read-documen
 import { Status } from '@app/entities/document.entitiy';
 import { FindAllDocumentsUnread } from '@app/useCases/find-all-documents-unread';
 import { FindDocumentByName } from '@app/useCases/find-document-by-name';
-import { SyncPrismaToNotionBatch } from '@infra/database/batchs/syncPrismaToNotion.batch';
+import { SyncPrismaToNotionBatch } from '@infra/batchs/syncPrismaToNotion.batch';
 import { NotionDocumentRepository } from '@infra/database/notion/repositories/notion-document-repository';
-import { SyncNotionDatabaseBatch } from '@infra/database/batchs/syncNotionDatabase.batch';
+import { SyncNotionDatabaseBatch } from '@infra/batchs/syncNotionDatabase.batch';
 
 type UpdateDocumentStatusEvent = {
   id: string;

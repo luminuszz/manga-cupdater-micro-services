@@ -10,8 +10,7 @@ export class SyncPrismaToNotionBatch {
   ) {}
 
   async execute() {
-    const notionData =
-      await this.notionDocumentRepository.findAllDocumentWithUnreadStatus();
+    const notionData = await this.notionDocumentRepository.findaAllDocuments();
 
     await this.prismaDocumentRepository.syncDatabase(notionData);
   }

@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 
 export type Category = 'manga' | 'anime' | 'Webtoom';
 
-export type Status = 'read' | 'unread';
+export type Status = 'read' | 'unread' | 'reading' | 'on_hold' | 'finished';
 
 type DocumentProps = {
   id?: string;

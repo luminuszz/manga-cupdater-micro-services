@@ -12,8 +12,6 @@ export class KafkaService
   extends ClientKafka
   implements OnModuleInit, OnModuleDestroy
 {
-  public logger = new Logger(KafkaService.name);
-
   constructor(private readonly config: ConfigService) {
     super({
       client: {
@@ -31,8 +29,6 @@ export class KafkaService
     this.subscribeToResponseOf('document.findAllUnread');
 
     await this.connect();
-
-    this.logger.debug('Kafka is listening');
   }
 
   async onModuleDestroy() {

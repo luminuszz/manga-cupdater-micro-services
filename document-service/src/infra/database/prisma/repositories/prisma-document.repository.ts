@@ -7,6 +7,7 @@ import {
   Document as PrismaDocument,
 } from '@prisma/client';
 import { PrismaDocumentMapper } from '@infra/database/prisma/mappers/prisma-document-mapper';
+import { omit } from 'lodash';
 
 @Injectable()
 export class PrismaDocumentRepository implements DocumentRepository {
@@ -17,7 +18,7 @@ export class PrismaDocumentRepository implements DocumentRepository {
   ): Promise<Document | null> {
     const response = await this.prisma.document.findUnique({
       where: {
-        notion_id: recipientId,
+        recipient_id: recipientId,
       },
     });
 
@@ -53,7 +54,7 @@ export class PrismaDocumentRepository implements DocumentRepository {
         name: document.name,
         url: document.url,
         cap: document.cap,
-        notion_id: document.recipientId,
+        recipient_id: document.recipientId,
       },
     });
   }
@@ -90,29 +91,41 @@ export class PrismaDocumentRepository implements DocumentRepository {
 
   async syncDatabase(documents: Document[]): Promise<void> {
     const operations = documents.map((document) => {
+      const status = PrismaDocumentMapper.parseStatusEnumPrisma(
+        document.status,
+      );
+
       const prismaDocument = {
         createdAt: document.createdAt,
-        status: PrismaDocumentMapper.parseStatusEnumPrisma(document.status),
+        status: status,
         name: document.name,
         url: document.url,
-        notion_id: document.recipientId,
+        recipient_id: document.recipientId,
         cap: document.cap,
-        hasNewChapter:
-          PrismaDocumentMapper.parseStatusEnumPrisma(document.status) ===
-          PrismaStatus.UNREAD,
+        hasNewChapter: status === PrismaStatus.UNREAD,
       } satisfies Omit<PrismaDocument, 'updatedAt' | 'id'>;
 
       this.logger.log(`Syncing document ${document.name} to prisma database`);
 
+      const updatedPrismaDocument = omit(prismaDocument, ['cap']);
+
       return this.prisma.document.upsert({
         where: {
-          notion_id: prismaDocument.notion_id,
+          recipient_id: prismaDocument.recipient_id,
         },
         create: prismaDocument,
-        update: prismaDocument,
+        update: {
+          ...updatedPrismaDocument,
+        },
       });
     });
 
     await this.prisma.$transaction(operations);
+  }
+
+  async findaAllDocuments(): Promise<Document[]> {
+    const reesponse = await this.prisma.document.findMany();
+
+    return reesponse.map((item) => PrismaDocumentMapper.toDomain(item));
   }
 }

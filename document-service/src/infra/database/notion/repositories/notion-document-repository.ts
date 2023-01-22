@@ -9,8 +9,14 @@ import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class NotionDocumentRepository implements DocumentRepository {
-  findDocumentByRecipentId(recipientId: string): Promise<Document | null> {
-    return Promise.resolve(undefined);
+  async findDocumentByRecipentId(
+    recipientId: string,
+  ): Promise<Document | null> {
+    const response = await this.notion.pages.retrieve({
+      page_id: recipientId,
+    });
+
+    return NotionMapper.toDomain(response as NotionPage);
   }
   constructor(
     @Inject(NOTION_CLIENT_PROVIDER_TOKEN)
@@ -98,5 +104,21 @@ export class NotionDocumentRepository implements DocumentRepository {
     return results?.length
       ? NotionMapper.toDomain(results[0] as NotionPage)
       : null;
+  }
+
+  async findaAllDocuments(): Promise<Document[]> {
+    const response = await this.notion.databases.query({
+      database_id: this.configService.get('NOTION_DATABASE_ID'),
+      filter: {
+        property: 'Name',
+        title: {
+          is_not_empty: true,
+        },
+      },
+    });
+
+    return response.results.map((item) =>
+      NotionMapper.toDomain(item as NotionPage),
+    );
   }
 }

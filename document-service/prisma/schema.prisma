@@ -15,6 +15,9 @@ datasource db {
 enum Status {
   READ
   UNREAD
+  READING
+  ON_HOLD
+  FINISHED
 }
 
 model  Document {
@@ -25,6 +28,10 @@ model  Document {
   cap              Float
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
-  notion_id        String   @unique
+  recipient_id        String   @unique
   status           Status   @default(UNREAD)
+
+
+  @@index([name, recipient_id])
+
 }

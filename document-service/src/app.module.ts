@@ -9,6 +9,7 @@ import { MessagingModule } from '@infra/messaging/messaging.module';
 import { DatabaseModule } from '@infra/database/database.module';
 import { CreateDocument } from '@app/useCases/create-document';
 import { NotionModule } from '@infra/database/notion/notion.module';
+import { BatchModule } from '@infra/batchs/batch.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { NotionModule } from '@infra/database/notion/notion.module';
     MessagingModule,
     DatabaseModule,
     NotionModule,
+    BatchModule,
   ],
 
   providers: [

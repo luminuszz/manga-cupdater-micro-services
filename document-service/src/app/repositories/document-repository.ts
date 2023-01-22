@@ -18,4 +18,6 @@ export abstract class DocumentRepository {
   abstract findDocumentByRecipentId(
     recipientId: string,
   ): Promise<Document | null>;
+
+  abstract findaAllDocuments(): Promise<Document[]>;
 }

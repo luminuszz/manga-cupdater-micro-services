@@ -1,9 +1,4 @@
-import {
-  Injectable,
-  Logger,
-  OnModuleDestroy,
-  OnModuleInit,
-} from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { FindAllUnreadResponseDto } from './dto/find-all-unread-response.dto';
 import { FindComicCapByUrlEvent } from './dto/find-comicby-url-event.dto';

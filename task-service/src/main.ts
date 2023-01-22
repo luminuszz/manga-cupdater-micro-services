@@ -1,12 +1,15 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { Transport } from '@nestjs/microservices';
 import { Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 (async () => {
-  const logger = new Logger('Apllication context');
+  const logger = new Logger('Apllication context', { timestamp: true });
 
   const app = await NestFactory.create(AppModule);
+
+  const configService = await app.get(ConfigService);
 
   app.connectMicroservice({
     transport: Transport.KAFKA,
@@ -17,7 +20,7 @@ import { Logger } from '@nestjs/common';
           retries: 2,
         },
 
-        brokers: [process.env.KAFKA_CONECT_URL],
+        brokers: [configService.get('KAFKA_CONECT_URL')],
       },
 
       consumer: {
@@ -26,6 +29,8 @@ import { Logger } from '@nestjs/common';
     },
   });
 
+  const PORT = configService.get<number>('API_PORT');
+
   app.startAllMicroservices().then(() => logger.log('Microservices started'));
-  app.listen(3001).then(() => logger.log('http is listening'));
+  app.listen(PORT).then(() => logger.log(`http is listening on port ${PORT}`));
 })();
