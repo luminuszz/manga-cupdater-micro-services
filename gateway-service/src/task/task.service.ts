@@ -10,7 +10,7 @@ export class TaskService {
 
   private logger = new Logger(TaskService.name);
 
-  @Cron(CronExpression.EVERY_HOUR, {
+  @Cron(CronExpression.EVERY_30_MINUTES, {
     timeZone: 'America/Bahia',
   })
   async startComicsJobsTask() {
@@ -30,6 +30,7 @@ export class TaskService {
       });
   }
 
+  @Cron(CronExpression.EVERY_2_HOURS)
   async startSyncDatabaseBatch() {
     this.logger.log('Start sync database batch');
 

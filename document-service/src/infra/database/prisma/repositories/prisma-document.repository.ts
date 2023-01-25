@@ -1,16 +1,18 @@
 import { DocumentRepository } from '@app/repositories/document-repository';
-import { Document, Status } from '@app/entities/document.entitiy';
+import { Document } from '@app/entities/document.entitiy';
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '@infra/database/prisma/prisma.service';
 import {
   Status as PrismaStatus,
   Document as PrismaDocument,
 } from '@prisma/client';
-import { PrismaDocumentMapper } from '@infra/database/prisma/mappers/prisma-document-mapper';
+import { PrismaMapper } from '@infra/database/prisma/mappers/prisma.mapper';
 import { omit } from 'lodash';
 
 @Injectable()
 export class PrismaDocumentRepository implements DocumentRepository {
+  constructor(private readonly prisma: PrismaService) {}
+
   private logger = new Logger(PrismaDocumentRepository.name);
 
   async findDocumentByRecipentId(
@@ -22,35 +24,26 @@ export class PrismaDocumentRepository implements DocumentRepository {
       },
     });
 
-    return response ? PrismaDocumentMapper.toDomain(response) : null;
+    return response ? PrismaMapper.toDomain(response) : null;
   }
 
-  async updateDocumentStatus(
-    id: string,
-    status: Status,
-    chapter?: number,
-  ): Promise<void> {
+  async updateForNewChapter(id: string): Promise<void> {
     await this.prisma.document.update({
       where: {
         id,
       },
       data: {
-        status: PrismaDocumentMapper.parseStatusEnumPrisma(status),
-        cap: chapter,
-        hasNewChapter:
-          PrismaDocumentMapper.parseStatusEnumPrisma(status) ===
-          PrismaStatus.UNREAD,
+        hasNewChapter: true,
       },
     });
   }
-  constructor(private readonly prisma: PrismaService) {}
 
   async createDocument(document: Document): Promise<void> {
     await this.prisma.document.create({
       data: {
         createdAt: document.createdAt,
         id: document.id,
-        status: PrismaDocumentMapper.parseStatusEnumPrisma(document.status),
+        status: PrismaMapper.parseStatusEnumPrisma(document.status),
         name: document.name,
         url: document.url,
         cap: document.cap,
@@ -59,14 +52,17 @@ export class PrismaDocumentRepository implements DocumentRepository {
     });
   }
 
-  async findAllDocumentWithUnreadStatus(): Promise<Document[]> {
+  async findAllDocumentWithStatusFollowingWithHasNewChapterFalse(): Promise<
+    Document[]
+  > {
     const response = await this.prisma.document.findMany({
       where: {
-        status: PrismaStatus.READ,
+        status: PrismaStatus.FOLLOWING,
+        hasNewChapter: false,
       },
     });
 
-    return response.map((item) => PrismaDocumentMapper.toDomain(item));
+    return response.map((item) => PrismaMapper.toDomain(item));
   }
 
   async findDocumentById(id: string): Promise<Document | null> {
@@ -76,7 +72,7 @@ export class PrismaDocumentRepository implements DocumentRepository {
       },
     });
 
-    return response ? PrismaDocumentMapper.toDomain(response) : null;
+    return response ? PrismaMapper.toDomain(response) : null;
   }
 
   async findDocumentByName(name: string): Promise<Document | null> {
@@ -86,14 +82,12 @@ export class PrismaDocumentRepository implements DocumentRepository {
       },
     });
 
-    return response ? PrismaDocumentMapper.toDomain(response) : null;
+    return response ? PrismaMapper.toDomain(response) : null;
   }
 
   async syncDatabase(documents: Document[]): Promise<void> {
     const operations = documents.map((document) => {
-      const status = PrismaDocumentMapper.parseStatusEnumPrisma(
-        document.status,
-      );
+      const status = PrismaMapper.parseStatusEnumPrisma(document.status);
 
       const prismaDocument = {
         createdAt: document.createdAt,
@@ -102,7 +96,7 @@ export class PrismaDocumentRepository implements DocumentRepository {
         url: document.url,
         recipient_id: document.recipientId,
         cap: document.cap,
-        hasNewChapter: status === PrismaStatus.UNREAD,
+        hasNewChapter: document.hasNewchapter,
       } satisfies Omit<PrismaDocument, 'updatedAt' | 'id'>;
 
       this.logger.log(`Syncing document ${document.name} to prisma database`);
@@ -114,9 +108,7 @@ export class PrismaDocumentRepository implements DocumentRepository {
           recipient_id: prismaDocument.recipient_id,
         },
         create: prismaDocument,
-        update: {
-          ...updatedPrismaDocument,
-        },
+        update: updatedPrismaDocument,
       });
     });
 
@@ -126,6 +118,50 @@ export class PrismaDocumentRepository implements DocumentRepository {
   async findaAllDocuments(): Promise<Document[]> {
     const reesponse = await this.prisma.document.findMany();
 
-    return reesponse.map((item) => PrismaDocumentMapper.toDomain(item));
+    return reesponse.map((item) => PrismaMapper.toDomain(item));
+  }
+
+  async findAllDocumentWithStatusFollowing(): Promise<Document[]> {
+    const response = await this.prisma.document.findMany({
+      where: {
+        status: PrismaStatus.FOLLOWING,
+      },
+    });
+
+    return response.map(PrismaMapper.toDomain);
+  }
+
+  async updateHasNewChapterForFalse(id: string): Promise<void> {
+    await this.prisma.document.update({
+      where: {
+        id,
+      },
+
+      data: {
+        hasNewChapter: false,
+      },
+    });
+  }
+  async updateHasNewChapterForTrue(id: string): Promise<void> {
+    await this.prisma.document.update({
+      where: {
+        id,
+      },
+
+      data: {
+        hasNewChapter: true,
+      },
+    });
+  }
+  async updateChapter(id: string, chapter: number): Promise<void> {
+    await this.prisma.document.update({
+      where: {
+        id,
+      },
+
+      data: {
+        cap: chapter,
+      },
+    });
   }
 }

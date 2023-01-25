@@ -39,6 +39,7 @@ export class CreateDocument {
         status: data.status,
         category: 'anime',
         recipientId: data.recipientId,
+        hasNewchapter: false,
       },
       data?.id,
     );

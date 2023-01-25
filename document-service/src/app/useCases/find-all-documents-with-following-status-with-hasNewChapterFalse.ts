@@ -3,12 +3,10 @@ import { Document } from '@app/entities/document.entitiy';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class FindAllDocumentsUnread {
+export class FindAllDocumentsWithFollowingStatusWithHasNewChapterFalse {
   constructor(private readonly documentRepository: DocumentRepository) {}
 
   async execute(): Promise<Document[]> {
-    console.log('FindAllDocumentsUnread');
-
-    return this.documentRepository.findAllDocumentWithUnreadStatus();
+    return this.documentRepository.findAllDocumentWithStatusFollowingWithHasNewChapterFalse();
   }
 }

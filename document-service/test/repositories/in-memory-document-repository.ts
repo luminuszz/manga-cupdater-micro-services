@@ -1,15 +1,17 @@
-import { Document, Status } from '@app/entities/document.entitiy';
+import { Document } from '@app/entities/document.entitiy';
 import { DocumentRepository } from '@app/repositories/document-repository';
 
 export class InMemoryDocumentRepository implements DocumentRepository {
   private documents: Document[] = [];
 
-  async updateDocumentStatus(id: string, status: Status): Promise<void> {
+  async updateForNewChapter(id: string): Promise<void> {
     const index = this.documents.findIndex((doc) => doc.id === id);
 
-    if (index >= 0) {
-      this.documents[index].status = status;
-    }
+    const updateDocument = Object.assign(this.documents[index], {});
+
+    updateDocument.hasNewchapter = true;
+
+    this.documents[index] = updateDocument;
   }
 
   async findDocumentById(id: string): Promise<Document | null> {
@@ -22,8 +24,32 @@ export class InMemoryDocumentRepository implements DocumentRepository {
     this.documents.push(document);
   }
 
-  async findAllDocumentWithUnreadStatus(): Promise<Document[]> {
-    return this.documents.filter((item) => item.status === 'unread');
+  async updateHasNewChapterForFalse(id: string): Promise<void> {
+    const index = this.documents.findIndex((doc) => doc.id === id);
+
+    const updateDocument = Object.assign(this.documents[index], {});
+
+    updateDocument.hasNewchapter = false;
+
+    this.documents[index] = updateDocument;
+  }
+
+  async updateHasNewChapterForTrue(id: string): Promise<void> {
+    const index = this.documents.findIndex((doc) => doc.id === id);
+
+    const updateDocument = Object.assign(this.documents[index], {});
+
+    updateDocument.hasNewchapter = true;
+
+    this.documents[index] = updateDocument;
+  }
+
+  async findAllDocumentWithStatusFollowingWithHasNewChapterFalse(): Promise<
+    Document[]
+  > {
+    return this.documents.filter(
+      (item) => item.status === 'following' && !item.hasNewchapter,
+    );
   }
 
   async findDocumentByName(name: string): Promise<Document | null> {
@@ -38,5 +64,23 @@ export class InMemoryDocumentRepository implements DocumentRepository {
     return (
       this.documents.find((item) => item.recipientId === recipientId) || null
     );
+  }
+
+  async findaAllDocuments(): Promise<Document[]> {
+    return this.documents;
+  }
+
+  async findAllDocumentWithStatusFollowing(): Promise<Document[]> {
+    return this.documents.filter((item) => item.status === 'following');
+  }
+
+  async updateChapter(id: string, chapter: number): Promise<void> {
+    const index = this.documents.findIndex((doc) => doc.id === id);
+
+    const updateDocument = Object.assign(this.documents[index], {});
+
+    updateDocument.cap = chapter;
+
+    this.documents[index] = updateDocument;
   }
 }

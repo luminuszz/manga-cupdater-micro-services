@@ -1,26 +1,21 @@
 import { DocumentRepository } from '@app/repositories/document-repository';
-import { UpdateToReadDocumentStatusDto } from '@app/dto/update-to-read-document-status-dto';
 import { NotFoundDocumentError } from '@app/useCases/errors/not-found-document-error';
 import { Injectable } from '@nestjs/common';
 
+interface MarkDocumentToUnreadInput {
+  id: string;
+}
+
 @Injectable()
-export class UpdateToReadDocumentStatus {
+export class MarkDocumentToUnread {
   constructor(private readonly documentRepository: DocumentRepository) {}
-  async execute({ status, id, newChapter }: UpdateToReadDocumentStatusDto) {
+  async execute({ id }: MarkDocumentToUnreadInput) {
     const document = await this.documentRepository.findDocumentById(id);
 
     if (!document) {
       throw new NotFoundDocumentError();
     }
 
-    console.log({
-      status,
-    });
-
-    await this.documentRepository.updateDocumentStatus(
-      document.id,
-      status,
-      newChapter,
-    );
+    await this.documentRepository.updateHasNewChapterForTrue(document.id);
   }
 }

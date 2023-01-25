@@ -33,37 +33,24 @@ export class NotionDocumentRepository implements DocumentRepository {
     return NotionMapper.toDomain(notionPage);
   }
 
-  public async updateDocumentStatus(
-    id: string,
-    status: Status,
-    chapter?: number,
-  ): Promise<void> {
+  public async updateForNewChapter(id: string): Promise<void> {
     await this.notion.pages.update({
       page_id: id,
       properties: {
         'CAPITULO NOVO': {
-          checkbox: status === 'unread',
+          checkbox: true,
         },
       },
     });
-
-    if (chapter) {
-      await this.notion.pages.update({
-        page_id: id,
-        properties: {
-          cap: {
-            number: chapter,
-          },
-        },
-      });
-    }
   }
 
   async createDocument(document: Document): Promise<void> {
     await this.notion.pages.create({ ...document } as any);
   }
 
-  async findAllDocumentWithUnreadStatus(): Promise<Document[]> {
+  async findAllDocumentWithStatusFollowingWithHasNewChapterFalse(): Promise<
+    Document[]
+  > {
     const response = await this.notion.databases.query({
       database_id: this.configService.get('NOTION_DATABASE_ID'),
       filter: {
@@ -120,5 +107,54 @@ export class NotionDocumentRepository implements DocumentRepository {
     return response.results.map((item) =>
       NotionMapper.toDomain(item as NotionPage),
     );
+  }
+
+  async findAllDocumentWithStatusFollowing(): Promise<Document[]> {
+    const response = await this.notion.databases.query({
+      database_id: this.configService.get('NOTION_DATABASE_ID'),
+      filter: {
+        property: 'status',
+        select: {
+          equals: 'Acompanhando',
+        },
+      },
+    });
+
+    return response.results.map((item) =>
+      NotionMapper.toDomain(item as NotionPage),
+    );
+  }
+
+  async updateChapter(id: string, chapter: number): Promise<void> {
+    await this.notion.pages.update({
+      page_id: id,
+      properties: {
+        cap: {
+          number: chapter,
+        },
+      },
+    });
+  }
+
+  async updateHasNewChapterForFalse(id: string): Promise<void> {
+    await this.notion.pages.update({
+      page_id: id,
+      properties: {
+        'CAPITULO NOVO': {
+          checkbox: false,
+        },
+      },
+    });
+  }
+
+  async updateHasNewChapterForTrue(id: string): Promise<void> {
+    await this.notion.pages.update({
+      page_id: id,
+      properties: {
+        'CAPITULO NOVO': {
+          checkbox: true,
+        },
+      },
+    });
   }
 }

@@ -9,13 +9,18 @@ import { ConfigService } from '@nestjs/config';
 
   const app = await NestFactory.create(AppModule);
 
+  app.enableCors({
+    allowedHeaders: '*',
+    origin: ['http://localhost:3000', 'http://localhost:3001'],
+  });
+
   const configService = await app.get(ConfigService);
 
   app.connectMicroservice({
     transport: Transport.KAFKA,
     options: {
       client: {
-        clientId: 'task-service-client',
+        clientId: 'gateway-service-client',
         retry: {
           retries: 2,
         },
@@ -24,7 +29,7 @@ import { ConfigService } from '@nestjs/config';
       },
 
       consumer: {
-        groupId: 'task-service-consumer',
+        groupId: 'gateway-service-consumer',
       },
     },
   });

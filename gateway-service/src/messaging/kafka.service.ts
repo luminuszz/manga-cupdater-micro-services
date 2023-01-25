@@ -15,17 +15,18 @@ export class KafkaService
   constructor(private readonly config: ConfigService) {
     super({
       client: {
-        clientId: 'task-service-client',
+        clientId: 'gateway-service-client',
         brokers: [config.get<string>('KAFKA_CONECT_URL')],
       },
 
       consumer: {
-        groupId: 'task-service-consumer',
+        groupId: 'gateway-service-consumer',
       },
     });
   }
 
   async onModuleInit() {
+    this.subscribeToResponseOf('document.findAllWithUnfollowStatus');
     this.subscribeToResponseOf('document.findAllUnread');
 
     await this.connect();

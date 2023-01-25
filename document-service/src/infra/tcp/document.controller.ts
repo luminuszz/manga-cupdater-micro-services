@@ -1,18 +1,23 @@
 import { Controller, Logger } from '@nestjs/common';
 import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
 import { FindDocumentById } from '@app/useCases/find-document-by-id';
-import { UpdateToReadDocumentStatus } from '@app/useCases/update-to-read-document-status';
-import { Status } from '@app/entities/document.entitiy';
-import { FindAllDocumentsUnread } from '@app/useCases/find-all-documents-unread';
+
+import { FindAllDocumentsWithFollowingStatusWithHasNewChapterFalse } from '@app/useCases/find-all-documents-with-following-status-with-hasNewChapterFalse';
 import { FindDocumentByName } from '@app/useCases/find-document-by-name';
 import { SyncPrismaToNotionBatch } from '@infra/batchs/syncPrismaToNotion.batch';
-import { NotionDocumentRepository } from '@infra/database/notion/repositories/notion-document-repository';
 import { SyncNotionDatabaseBatch } from '@infra/batchs/syncNotionDatabase.batch';
+import { FindAllDocumentsWithUnfollowStatus } from '@app/useCases/find-all-documents-with-unfollow-status';
 
-type UpdateDocumentStatusEvent = {
+import { MarkDocumentToUnread } from '@app/useCases/mark-document-to-unread';
+import { MarkDocumentToRead } from '@app/useCases/mark-document-to-read';
+
+type MarkDocumentToReadEvent = {
   id: string;
-  status: Status;
-  newChapter?: number;
+  chapter: number;
+};
+
+type MarkDocumentToUreadEvent = {
+  id: string;
 };
 
 type FindDocumentByIdEvent = {
@@ -28,10 +33,13 @@ export class DocumentController {
   private logger = new Logger(DocumentController.name);
   constructor(
     private readonly findDocumentById: FindDocumentById,
-    private readonly updateToReadDocumentStatus: UpdateToReadDocumentStatus,
-    private readonly findAllDocumentsUnread: FindAllDocumentsUnread,
+
+    private readonly findAllDocumentsUnread: FindAllDocumentsWithFollowingStatusWithHasNewChapterFalse,
     private findDocumentByName: FindDocumentByName,
     private readonly syncPrismaToNotionBatch: SyncPrismaToNotionBatch,
+    private readonly findAllDocumentsWithUnfollowStatus: FindAllDocumentsWithUnfollowStatus,
+    private readonly markDocumentToUnread: MarkDocumentToUnread,
+    private readonly markDocumentToRead: MarkDocumentToRead,
 
     private readonly syncNotionDatabase: SyncNotionDatabaseBatch,
   ) {}
@@ -64,17 +72,48 @@ export class DocumentController {
     });
   }
 
+  @MessagePattern('document.findAllWithUnfollowStatus')
+  async findAllWithUnfollowStatus() {
+    this.logger.log(
+      `recvied message -> document.findAllWithUnfollowStatus -> ${new Date()}`,
+    );
+
+    return this.findAllDocumentsWithUnfollowStatus.exceute();
+  }
+
   @EventPattern('scraping.newChapterFound')
-  async onNewChapterFound(@Payload() payload: UpdateDocumentStatusEvent) {
+  async onNewChapterFound(@Payload() payload: MarkDocumentToUreadEvent) {
     this.logger.log(
       `recvied message with id ${
         payload.id
       } -> scraping.newChapterFound -> ${new Date()}`,
     );
 
-    await this.updateToReadDocumentStatus.execute(payload);
+    await this.markDocumentToUnread.execute({
+      id: payload.id,
+    });
 
-    await this.syncNotionDatabase.execute(payload.id, payload.status);
+    await this.syncNotionDatabase.execute(payload.id, 'marksAsUnread');
+  }
+
+  @EventPattern('document.markAsRead')
+  async updateDocumentStatus(@Payload() payload: MarkDocumentToReadEvent) {
+    this.logger.log(
+      `recvied message with id ${
+        payload.id
+      } -> document.markAsRead -> ${new Date()}`,
+    );
+
+    await this.markDocumentToRead.execute({
+      id: payload.id,
+      chapter: payload.chapter,
+    });
+
+    await this.syncNotionDatabase.execute(
+      payload.id,
+      'marksAsRead',
+      payload.chapter,
+    );
   }
 
   @EventPattern('tasks.jobs.syncDatabase')

@@ -1,7 +1,7 @@
 import { DocumentRepository } from '@app/repositories/document-repository';
 import { InMemoryDocumentRepository } from '@test/repositories/in-memory-document-repository';
 import { MakeDocument } from '@test/helpers/make-document';
-import { UpdateToReadDocumentStatus } from '@app/useCases/update-to-read-document-status';
+import { MarkDocumentToUnread } from '@app/useCases/mark-document-to-unread';
 import { FindDocumentById } from '@app/useCases/find-document-by-id';
 import { NotFoundDocumentError } from '@app/useCases/errors/not-found-document-error';
 
@@ -12,23 +12,20 @@ describe('UpdateToReadDocumentStatus', () => {
     documentRepository = new InMemoryDocumentRepository();
   });
 
-  it('should be able to update a document status to read', async () => {
-    const document = MakeDocument.create({ status: 'unread' });
+  it('should be able to update a document status to unread', async () => {
+    const document = MakeDocument.create();
     const findDocument = new FindDocumentById(documentRepository);
-    const updateToReadDocumentStatus = new UpdateToReadDocumentStatus(
-      documentRepository,
-    );
+    const service = new MarkDocumentToUnread(documentRepository);
 
     await documentRepository.createDocument(document);
 
-    await updateToReadDocumentStatus.execute({
-      status: 'read',
+    await service.execute({
       id: document.id,
     });
 
     const updatedDocument = await findDocument.execute(document.id);
 
-    expect(updatedDocument?.status).toBe('read');
+    expect(updatedDocument?.hasNewchapter).toBe(true);
   });
 
   it('should be able to return null if document not found', async () => {
@@ -38,12 +35,12 @@ describe('UpdateToReadDocumentStatus', () => {
       MakeDocument.create({ id: 'other_id' }),
     );
 
-    const updateToReadDocumentStatus = new UpdateToReadDocumentStatus(
+    const updateToReadDocumentStatus = new MarkDocumentToUnread(
       documentRepository,
     );
 
     await expect(
-      updateToReadDocumentStatus.execute({ status: 'read', id: fake_id }),
+      updateToReadDocumentStatus.execute({ id: fake_id }),
     ).rejects.toBeInstanceOf(NotFoundDocumentError);
   });
 });

@@ -4,9 +4,9 @@ import {
 } from '@prisma/client';
 import { Document, Status } from '@app/entities/document.entitiy';
 
-export class PrismaDocumentMapper {
+export class PrismaMapper {
   static toDomain(prismaDocument: PrismaDocument): Document {
-    const status: Status = PrismaDocumentMapper.parseStatusEnumToDomain(
+    const status: Status = PrismaMapper.parseStatusEnumToDomain(
       prismaDocument.status,
     );
 
@@ -20,6 +20,7 @@ export class PrismaDocumentMapper {
         nextCap: undefined,
         name: prismaDocument.name,
         recipientId: prismaDocument.recipient_id,
+        hasNewchapter: prismaDocument.hasNewChapter,
       },
       prismaDocument.id,
     );
@@ -27,18 +28,17 @@ export class PrismaDocumentMapper {
 
   private static enumMapper: Record<Status, PrismaStatus> = {
     on_hold: PrismaStatus.ON_HOLD,
-    read: PrismaStatus.READ,
     reading: PrismaStatus.READING,
-    unread: PrismaStatus.UNREAD,
     finished: PrismaStatus.FINISHED,
+    following: PrismaStatus.FOLLOWING,
   };
 
   static parseStatusEnumPrisma(status: Status): PrismaStatus {
-    return PrismaDocumentMapper.enumMapper[status];
+    return PrismaMapper.enumMapper[status];
   }
 
   static parseStatusEnumToDomain(status: PrismaStatus): Status {
-    return Object.keys(PrismaDocumentMapper.enumMapper).find(
+    return Object.keys(PrismaMapper.enumMapper).find(
       (item) => status.toLocaleLowerCase() === item,
     ) as Status;
   }

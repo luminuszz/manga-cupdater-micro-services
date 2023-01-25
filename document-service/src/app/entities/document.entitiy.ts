@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 
 export type Category = 'manga' | 'anime' | 'Webtoom';
 
-export type Status = 'read' | 'unread' | 'reading' | 'on_hold' | 'finished';
+export type Status = 'following' | 'reading' | 'on_hold' | 'finished';
 
 type DocumentProps = {
   id?: string;
@@ -11,11 +11,10 @@ type DocumentProps = {
   nextCap?: number | null | undefined;
   url: string;
   createdAt: Date;
-
   category: Category;
   recipientId: string;
-
   status: Status;
+  hasNewchapter: boolean;
 };
 
 export class Document {
@@ -89,5 +88,13 @@ export class Document {
 
   public get status() {
     return this.props.status;
+  }
+
+  public set hasNewchapter(hasNewchapter: boolean) {
+    this.props.hasNewchapter = hasNewchapter;
+  }
+
+  public get hasNewchapter() {
+    return this.props.hasNewchapter;
   }
 }

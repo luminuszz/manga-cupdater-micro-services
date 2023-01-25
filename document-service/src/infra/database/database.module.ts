@@ -4,10 +4,9 @@ import { DocumentRepository } from '@app/repositories/document-repository';
 import { NotionModule } from '@infra/database/notion/notion.module';
 import { PrismaDocumentRepository } from '@infra/database/prisma/repositories/prisma-document.repository';
 import { PrismaModule } from '@infra/database/prisma/prisma.module';
-import { BatchModule } from '@infra/batchs/batch.module';
 
 @Module({
-  imports: [NotionModule, PrismaModule, BatchModule],
+  imports: [NotionModule, PrismaModule],
 
   providers: [
     {

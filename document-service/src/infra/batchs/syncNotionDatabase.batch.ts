@@ -3,6 +3,8 @@ import { NotionDocumentRepository } from '@infra/database/notion/repositories/no
 import { Status } from '@app/entities/document.entitiy';
 import { PrismaDocumentRepository } from '@infra/database/prisma/repositories/prisma-document.repository';
 
+type Operation = 'marksAsRead' | 'marksAsUnread';
+
 @Injectable()
 export class SyncNotionDatabaseBatch {
   constructor(
@@ -12,17 +14,29 @@ export class SyncNotionDatabaseBatch {
 
   private logger = new Logger(SyncNotionDatabaseBatch.name);
 
-  async execute(id: string, status: Status) {
+  async execute(id: string, operation: Operation, chapter?: number) {
     const document = await this.prismaDocumentRepository.findDocumentById(id);
 
     if (document) {
-      await this.notionDocumentRepository.updateDocumentStatus(
-        document.recipientId,
-        status,
-      );
+      if (operation === 'marksAsUnread') {
+        await this.notionDocumentRepository.updateHasNewChapterForTrue(
+          document.recipientId,
+        );
+      } else {
+        await this.notionDocumentRepository.updateHasNewChapterForFalse(
+          document.recipientId,
+        );
+
+        if (chapter) {
+          await this.notionDocumentRepository.updateChapter(
+            document.recipientId,
+            chapter,
+          );
+        }
+      }
 
       this.logger.log(
-        `Document ${document.name} updated to ${status} status in Notion database`,
+        `Document ${document.name} updated hasNewChapter for "CAPITULO NOVO": ${document.hasNewchapter}  status in Notion database`,
       );
     }
   }

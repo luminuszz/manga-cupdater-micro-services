@@ -13,23 +13,22 @@ datasource db {
 
 
 enum Status {
-  READ
-  UNREAD
+  FOLLOWING
   READING
   ON_HOLD
   FINISHED
 }
 
 model  Document {
-  id               String @id @default(auto()) @map("_id") @db.ObjectId
-  name             String @unique
+  id               String           @id @default(auto()) @map("_id") @db.ObjectId
+  name             String           @unique
   url              String
-  hasNewChapter    Boolean @default(false)
+  hasNewChapter    Boolean          @default(false)
   cap              Float
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-  recipient_id        String   @unique
-  status           Status   @default(UNREAD)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  recipient_id      String          @unique
+  status           Status           @default(ON_HOLD)
 
 
   @@index([name, recipient_id])
