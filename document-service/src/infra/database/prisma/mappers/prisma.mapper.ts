@@ -21,6 +21,7 @@ export class PrismaMapper {
         name: prismaDocument.name,
         recipientId: prismaDocument.recipient_id,
         hasNewchapter: prismaDocument.hasNewChapter,
+        image: prismaDocument?.image,
       },
       prismaDocument.id,
     );

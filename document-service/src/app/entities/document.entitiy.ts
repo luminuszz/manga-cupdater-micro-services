@@ -15,6 +15,7 @@ type DocumentProps = {
   recipientId: string;
   status: Status;
   hasNewchapter: boolean;
+  image?: string;
 };
 
 export class Document {
@@ -96,5 +97,13 @@ export class Document {
 
   public get hasNewchapter() {
     return this.props.hasNewchapter;
+  }
+
+  public get image() {
+    return this.props?.image || null;
+  }
+
+  public set image(image: string) {
+    this.props.image = image;
   }
 }

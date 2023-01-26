@@ -29,6 +29,7 @@ model  Document {
   updatedAt        DateTime         @updatedAt
   recipient_id      String          @unique
   status           Status           @default(ON_HOLD)
+  image            String?
 
 
   @@index([name, recipient_id])

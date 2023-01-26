@@ -6,7 +6,6 @@ services:
       - KAFKA_CONECT_URL=${KAFKA_CONECT_URL}
       - NOTION_AUTH_TOKEN=${NOTION_AUTH_TOKEN}
       - NOTION_DATABASE_ID=${NOTION_DATABASE_ID}
-
     container_name: chapter_updater_document_service
     build:
         context: document-service
@@ -38,7 +37,6 @@ services:
 
   gateway_service:
     container_name: chapter_updater_gateway_service
-    restart: always
     ports:
       - "3001:3001"
     build:

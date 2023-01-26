@@ -9,6 +9,7 @@ export class MakeDocument {
   static create(props: Partial<DocumentProps> = {}): Document {
     return new Document(
       {
+        image: faker.image.imageUrl(),
         recipientId: faker.datatype.uuid(),
         name: faker.random.words().toString(),
         category: faker.helpers.arrayElement(['manga', 'anime']),

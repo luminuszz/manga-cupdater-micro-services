@@ -31,6 +31,7 @@ export class NotionMapper {
       createdAt: new Date(properties.Created.created_time),
       nextCap: null,
       recipientId: id,
+      image: properties?.image?.files?.[0]?.file?.url || null,
     });
   }
 

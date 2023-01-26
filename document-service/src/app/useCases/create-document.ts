@@ -11,6 +11,7 @@ type CreateDocumentInput = {
   recipientId: string;
   status: Status;
   id?: string;
+  image?: string;
 };
 
 @Injectable()
@@ -40,6 +41,7 @@ export class CreateDocument {
         category: 'anime',
         recipientId: data.recipientId,
         hasNewchapter: false,
+        image: data.image,
       },
       data?.id,
     );
