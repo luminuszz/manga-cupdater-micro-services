@@ -45,6 +45,7 @@ export interface Properties {
   id: CurrentCap;
   Gêneros: Gêneros;
   Name: Name;
+  image: any;
 }
 
 export interface CapituloNovo {

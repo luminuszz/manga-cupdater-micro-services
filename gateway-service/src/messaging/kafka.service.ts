@@ -17,6 +17,15 @@ export class KafkaService
       client: {
         clientId: 'gateway-service-client',
         brokers: [config.get<string>('KAFKA_CONECT_URL')],
+        connectionTimeout: 5000,
+        retry: {
+          retries: 5,
+          multiplier: 2,
+          restartOnFailure: async (e) => {
+            Logger.error(e);
+            return true;
+          },
+        },
       },
 
       consumer: {

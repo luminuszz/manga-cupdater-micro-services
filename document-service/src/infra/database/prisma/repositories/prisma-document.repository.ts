@@ -97,6 +97,7 @@ export class PrismaDocumentRepository implements DocumentRepository {
         recipient_id: document.recipientId,
         cap: document.cap,
         hasNewChapter: document.hasNewchapter,
+        image: document.image,
       } satisfies Omit<PrismaDocument, 'updatedAt' | 'id'>;
 
       this.logger.log(`Syncing document ${document.name} to prisma database`);
