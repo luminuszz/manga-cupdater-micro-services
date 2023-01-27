@@ -19,7 +19,7 @@ describe('FindDocumentById', () => {
 
     await documentRepository.createDocument(newDocument);
 
-    const document = await findDocument.execute(id);
+    const { document } = await findDocument.execute({ id });
 
     expect(document).toBeTruthy();
     expect(document?.id).toBe(id);

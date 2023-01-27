@@ -43,13 +43,16 @@ export class DocumentController {
 
     private readonly syncNotionDatabase: SyncNotionDatabaseBatch,
   ) {}
+
   @MessagePattern('document.getById')
   async getDocumentById(@Payload() { id }: FindDocumentByIdEvent) {
     this.logger.log(
       `recvied message with id ${id} -> document.getById -> ${new Date()}`,
     );
 
-    return await this.findDocumentById.execute(id);
+    return this.findDocumentById.execute({
+      id,
+    });
   }
 
   @MessagePattern('document.findAllUnread')

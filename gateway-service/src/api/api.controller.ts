@@ -32,6 +32,6 @@ export class ApiController {
   async getCommic(@Param('id') id: string) {
     return this.kafkaService
       .send('document.getById', { id })
-      .pipe(map((response: DocumentModel) => parseDocument(response)));
+      .pipe(map(({ document }) => parseDocument(document)));
   }
 }

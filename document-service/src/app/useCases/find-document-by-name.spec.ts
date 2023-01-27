@@ -1,7 +1,6 @@
 import { FindDocumentByName } from '@app/useCases/find-document-by-name';
 import { InMemoryDocumentRepository } from '@test/repositories/in-memory-document-repository';
 import { MakeDocument } from '@test/helpers/make-document';
-import { NotFoundDocumentError } from '@app/useCases/errors/not-found-document-error';
 
 describe('FindDocumentByName', () => {
   it('should be able to find a document by name', async () => {

@@ -72,6 +72,8 @@ export class PrismaDocumentRepository implements DocumentRepository {
       },
     });
 
+    console.log({ response });
+
     return response ? PrismaMapper.toDomain(response) : null;
   }
 

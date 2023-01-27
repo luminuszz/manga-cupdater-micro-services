@@ -23,7 +23,9 @@ describe('UpdateToReadDocumentStatus', () => {
       id: document.id,
     });
 
-    const updatedDocument = await findDocument.execute(document.id);
+    const { document: updatedDocument } = await findDocument.execute({
+      id: document.id,
+    });
 
     expect(updatedDocument?.hasNewchapter).toBe(true);
   });
