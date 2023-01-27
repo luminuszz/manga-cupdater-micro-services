@@ -1,11 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  OnModuleInit,
-  Param,
-  Patch,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch } from '@nestjs/common';
 import { KafkaService } from '../messaging/kafka.service';
 import { DocumentModel, parseDocument } from './models/document.model';
 import { map } from 'rxjs/operators';
@@ -33,5 +26,12 @@ export class ApiController {
       id,
       chapter,
     });
+  }
+
+  @Get('commics/:id')
+  async getCommic(@Param('id') id: string) {
+    return this.kafkaService
+      .send('document.getById', { id })
+      .pipe(map((response: DocumentModel) => parseDocument(response)));
   }
 }

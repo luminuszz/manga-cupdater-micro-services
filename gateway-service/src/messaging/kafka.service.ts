@@ -37,6 +37,7 @@ export class KafkaService
   async onModuleInit() {
     this.subscribeToResponseOf('document.findAllWithUnfollowStatus');
     this.subscribeToResponseOf('document.findAllUnread');
+    this.subscribeToResponseOf('document.getById');
 
     await this.connect();
   }
