@@ -10,6 +10,7 @@ type SendNotificationDto = {
 type SendNotificationResponse = {
   notification: Notification;
 };
+
 @Injectable()
 export class SendNotification {
   constructor(
@@ -26,9 +27,12 @@ export class SendNotification {
       recipient_id,
     });
 
-    await this.notificationProvider.sendNotification({ content, recipient_id });
-
     await this.notificationRepository.create(notification);
+
+    await this.notificationProvider.sendNotification({
+      content,
+      recipient_id,
+    });
 
     return {
       notification,

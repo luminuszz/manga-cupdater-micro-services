@@ -1,5 +1,5 @@
 import { NotionPage } from '@infra/database/notion/dto/notion-page.dto';
-import { Document, Status } from '@app/entities/document.entitiy';
+import { Document, Status } from '../../../../core/entities/document.entitiy';
 
 export type NotionDocument = {
   object: 'page';

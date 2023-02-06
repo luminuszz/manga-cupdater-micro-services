@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { DocumentRepository } from '@app/repositories/document-repository';
+import { DocumentRepository } from '@core/repositories/document.repository';
 
 @Injectable()
 export class FindAllDocumentsWithUnfollowStatus {

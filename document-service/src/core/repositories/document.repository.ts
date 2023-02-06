@@ -1,4 +1,4 @@
-import { Document } from '@app/entities/document.entitiy';
+import { Document } from '../entities/document.entitiy';
 
 export abstract class DocumentRepository {
   abstract findDocumentById(id: string): Promise<Document | null>;

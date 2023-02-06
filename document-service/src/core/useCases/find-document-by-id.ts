@@ -1,5 +1,5 @@
-import { DocumentRepository } from '../repositories/document-repository';
-import { Document } from '@app/entities/document.entitiy';
+import { DocumentRepository } from '@core/repositories/document.repository';
+import { Document } from '../entities/document.entitiy';
 import { Injectable } from '@nestjs/common';
 
 type FindDocumentByIdInput = {

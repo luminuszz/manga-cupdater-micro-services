@@ -1,4 +1,4 @@
-import { FindDocumentByName } from '@app/useCases/find-document-by-name';
+import { FindDocumentByName } from '../useCases/find-document-by-name';
 import { InMemoryDocumentRepository } from '@test/repositories/in-memory-document-repository';
 import { MakeDocument } from '@test/helpers/make-document';
 

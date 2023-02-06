@@ -1,6 +1,6 @@
 import { MakeDocument } from '@test/helpers/make-document';
 import { InMemoryDocumentRepository } from '@test/repositories/in-memory-document-repository';
-import { FindAllDocumentsWithFollowingStatusWithHasNewChapterFalse } from '@app/useCases/find-all-documents-with-following-status-with-hasNewChapterFalse';
+import { FindAllDocumentsWithFollowingStatusWithHasNewChapterFalse } from '../useCases/find-all-documents-with-following-status-with-hasNewChapterFalse';
 
 describe('FindAllDocumentsWithFollowingStatus', () => {
   it('should be able to find all document with status following ', async () => {

@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { NotionDocumentRepository } from '@infra/database/notion/repositories/notion-document-repository';
-import { Status } from '@app/entities/document.entitiy';
 import { PrismaDocumentRepository } from '@infra/database/prisma/repositories/prisma-document.repository';
 
 type Operation = 'marksAsRead' | 'marksAsUnread';

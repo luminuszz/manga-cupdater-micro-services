@@ -1,7 +1,7 @@
 import { InMemoryDocumentRepository } from '@test/repositories/in-memory-document-repository';
-import { CreateDocument } from '@app/useCases/create-document';
+import { CreateDocument } from '../useCases/create-document';
 import { MakeDocument } from '@test/helpers/make-document';
-import { DocumentAlreadyExistsError } from '@app/useCases/errors/document-already-exists.error';
+import { DocumentAlreadyExistsError } from '../useCases/errors/document-already-exists.error';
 
 describe('CreateDocument', () => {
   it('shoulde ble to create a new Document', async () => {

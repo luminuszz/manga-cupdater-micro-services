@@ -1,15 +1,15 @@
 import { Controller, Logger } from '@nestjs/common';
 import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
-import { FindDocumentById } from '@app/useCases/find-document-by-id';
+import { FindDocumentById } from '@core/useCases/find-document-by-id';
 
-import { FindAllDocumentsWithFollowingStatusWithHasNewChapterFalse } from '@app/useCases/find-all-documents-with-following-status-with-hasNewChapterFalse';
-import { FindDocumentByName } from '@app/useCases/find-document-by-name';
+import { FindAllDocumentsWithFollowingStatusWithHasNewChapterFalse } from '@core/useCases/find-all-documents-with-following-status-with-hasNewChapterFalse';
+import { FindDocumentByName } from '@core/useCases/find-document-by-name';
 import { SyncPrismaToNotionBatch } from '@infra/batchs/syncPrismaToNotion.batch';
 import { SyncNotionDatabaseBatch } from '@infra/batchs/syncNotionDatabase.batch';
-import { FindAllDocumentsWithUnfollowStatus } from '@app/useCases/find-all-documents-with-unfollow-status';
+import { FindAllDocumentsWithUnfollowStatus } from '@core/useCases/find-all-documents-with-unfollow-status';
 
-import { MarkDocumentToUnread } from '@app/useCases/mark-document-to-unread';
-import { MarkDocumentToRead } from '@app/useCases/mark-document-to-read';
+import { MarkDocumentToUnread } from '@core/useCases/mark-document-to-unread';
+import { MarkDocumentToRead } from '@core/useCases/mark-document-to-read';
 
 type MarkDocumentToReadEvent = {
   id: string;

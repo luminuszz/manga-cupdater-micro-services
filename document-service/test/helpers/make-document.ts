@@ -1,4 +1,4 @@
-import { Document } from '@app/entities/document.entitiy';
+import { Document } from '../../src/core/entities/document.entitiy';
 import { faker } from '@faker-js/faker';
 
 type DocumentProps = Document & {

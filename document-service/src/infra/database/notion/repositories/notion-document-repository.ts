@@ -1,10 +1,10 @@
-import { DocumentRepository } from '@app/repositories/document-repository';
+import { DocumentRepository } from '@core/repositories/document.repository';
 import { Inject, Injectable } from '@nestjs/common';
 import { NOTION_CLIENT_PROVIDER_TOKEN } from '@infra/database/notion/notion-client.provider';
 import { Client } from '@notionhq/client';
 import { NotionPage } from '@infra/database/notion/dto/notion-page.dto';
 import { NotionMapper } from '@infra/database/notion/mappers/notion-mapper';
-import { Document, Status } from '@app/entities/document.entitiy';
+import { Document } from '@core/entities/document.entitiy';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()

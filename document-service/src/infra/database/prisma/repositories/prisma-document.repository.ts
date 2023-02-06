@@ -1,5 +1,5 @@
-import { DocumentRepository } from '@app/repositories/document-repository';
-import { Document } from '@app/entities/document.entitiy';
+import { DocumentRepository } from '@core/repositories/document.repository';
+import { Document } from '@core/entities/document.entitiy';
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '@infra/database/prisma/prisma.service';
 import {
@@ -121,7 +121,7 @@ export class PrismaDocumentRepository implements DocumentRepository {
   async findaAllDocuments(): Promise<Document[]> {
     const reesponse = await this.prisma.document.findMany();
 
-    return reesponse.map((item) => PrismaMapper.toDomain(item));
+    return reesponse.map(PrismaMapper.toDomain);
   }
 
   async findAllDocumentWithStatusFollowing(): Promise<Document[]> {

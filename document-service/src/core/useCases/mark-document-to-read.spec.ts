@@ -1,8 +1,8 @@
-import { DocumentRepository } from '@app/repositories/document-repository';
+import { DocumentRepository } from '../repositories/document-repository';
 import { InMemoryDocumentRepository } from '@test/repositories/in-memory-document-repository';
-import { MarkDocumentToRead } from '@app/useCases/mark-document-to-read';
+import { MarkDocumentToRead } from '../useCases/mark-document-to-read';
 import { MakeDocument } from '@test/helpers/make-document';
-import { NotFoundDocumentError } from '@app/useCases/errors/not-found-document-error';
+import { NotFoundDocumentError } from '../useCases/errors/not-found-document-error';
 
 describe('MarkNewChapterRead', () => {
   let documentRepository: DocumentRepository;

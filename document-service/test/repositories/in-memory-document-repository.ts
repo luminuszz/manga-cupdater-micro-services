@@ -1,5 +1,5 @@
-import { Document } from '@app/entities/document.entitiy';
-import { DocumentRepository } from '@app/repositories/document-repository';
+import { Document } from '../../src/core/entities/document.entitiy';
+import { DocumentRepository } from '../../src/core/repositories/document-repository';
 
 export class InMemoryDocumentRepository implements DocumentRepository {
   private documents: Document[] = [];

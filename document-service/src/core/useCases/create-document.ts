@@ -1,7 +1,7 @@
-import { DocumentRepository } from '@app/repositories/document-repository';
+import { DocumentRepository } from '@core/repositories/document.repository';
 import { Injectable } from '@nestjs/common';
-import { Status, Document } from '@app/entities/document.entitiy';
-import { DocumentAlreadyExistsError } from '@app/useCases/errors/document-already-exists.error';
+import { Status, Document } from '../entities/document.entitiy';
+import { DocumentAlreadyExistsError } from '../useCases/errors/document-already-exists.error';
 
 type CreateDocumentInput = {
   name: string;

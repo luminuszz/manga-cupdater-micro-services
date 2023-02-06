@@ -1,5 +1,5 @@
-import { DocumentRepository } from '@app/repositories/document-repository';
-import { NotFoundDocumentError } from '@app/useCases/errors/not-found-document-error';
+import { DocumentRepository } from '@core/repositories/document.repository';
+import { NotFoundDocumentError } from '../useCases/errors/not-found-document-error';
 import { Injectable } from '@nestjs/common';
 
 interface MarkDocumentToUnreadInput {

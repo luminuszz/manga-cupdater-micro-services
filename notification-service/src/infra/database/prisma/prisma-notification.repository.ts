@@ -1,4 +1,7 @@
-import { NotificationRepository } from '@app/repositories/notification-repository';
+import {
+  FindNotificationByNameAndCaptionInput,
+  NotificationRepository,
+} from '@app/repositories/notification-repository';
 import { Notification } from '@app/entities/notification';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@infra/database/prisma/prisma.service';
@@ -17,5 +20,38 @@ export class PrismaNotificationRepository implements NotificationRepository {
         type: 'Manga',
       },
     });
+  }
+
+  async findNotificationByNameAndCaption({
+    chapter,
+    title,
+  }: FindNotificationByNameAndCaptionInput): Promise<Notification | null> {
+    const response = await this.prisma.notification.findMany({
+      where: {
+        AND: [
+          {
+            content: {
+              contains: `"title": ${title}`,
+            },
+          },
+          {
+            content: {
+              contains: `"chapter": ${chapter}`,
+            },
+          },
+        ],
+      },
+    });
+
+    const domainNotification = new Notification(
+      {
+        read_at: response[0]?.read_at,
+        content: response[0].content,
+        recipient_id: response[0].recipient_id,
+      },
+      response[0].id,
+    );
+
+    return response[0] ? domainNotification : null;
   }
 }

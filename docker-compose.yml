@@ -35,35 +35,6 @@ services:
          context: notification-service
          dockerfile: ./dockerfile
 
-  gateway_service:
-    container_name: chapter_updater_gateway_service
-    ports:
-      - "3001:3001"
-    build:
-      context: gateway-service
-      dockerfile: ./dockerfile
-    env_file:
-      - ./.env
-    environment:
-      - KAFKA_CONECT_URL=${KAFKA_CONECT_URL}
-      - DATABASE_URL=${DATABASE_URL}
-      - TELEGRAM_APP_ID=${TELEGRAM_APP_ID}
-      - TELEGRANM_API_HASH=${TELEGRANM_API_HASH}
-      - TELEGRAM_NOTIFICATION_BOT=${TELEGRAM_NOTIFICATION_BOT}
-      - TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID}
-
-
-  kafka_ui:
-    image: provectuslabs/kafka-ui:latest
-    restart: always
-    ports:
-      - 8080:8080
-    environment:
-      KAFKA_CLUSTERS_0_ZOOKEEPER: 139.144.184.180:2181
-      KAFKA_CLUSTERS_0_NAME: cloud_broker
-      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: 139.144.184.180:9092
-
-
 
 
 

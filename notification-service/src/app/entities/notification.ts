@@ -12,8 +12,8 @@ export class Notification {
 
   private readonly _created_at: Date;
 
-  constructor(private readonly props: NotificationProps) {
-    this._id = randomUUID();
+  constructor(private readonly props: NotificationProps, id?: string) {
+    this._id = id || randomUUID();
     this._created_at = new Date();
   }
 

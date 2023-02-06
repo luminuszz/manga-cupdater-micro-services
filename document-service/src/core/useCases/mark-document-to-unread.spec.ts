@@ -1,9 +1,9 @@
-import { DocumentRepository } from '@app/repositories/document-repository';
+import { DocumentRepository } from '../repositories/document-repository';
 import { InMemoryDocumentRepository } from '@test/repositories/in-memory-document-repository';
 import { MakeDocument } from '@test/helpers/make-document';
-import { MarkDocumentToUnread } from '@app/useCases/mark-document-to-unread';
-import { FindDocumentById } from '@app/useCases/find-document-by-id';
-import { NotFoundDocumentError } from '@app/useCases/errors/not-found-document-error';
+import { MarkDocumentToUnread } from '../useCases/mark-document-to-unread';
+import { FindDocumentById } from '../useCases/find-document-by-id';
+import { NotFoundDocumentError } from '../useCases/errors/not-found-document-error';
 
 describe('UpdateToReadDocumentStatus', () => {
   let documentRepository: DocumentRepository;

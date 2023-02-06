@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { DocumentRepository } from '@app/repositories/document-repository';
-import { NotFoundDocumentError } from '@app/useCases/errors/not-found-document-error';
+import { DocumentRepository } from '@core/repositories/document.repository';
+import { NotFoundDocumentError } from '../useCases/errors/not-found-document-error';
 
 interface MarkNewChapterReadInput {
   id: string;

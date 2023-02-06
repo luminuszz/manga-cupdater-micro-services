@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Transport } from '@nestjs/microservices';
-import { Logger } from '@nestjs/common';
+import { Logger, VersioningType } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 (async () => {
@@ -12,6 +12,10 @@ import { ConfigService } from '@nestjs/config';
   app.enableCors({
     allowedHeaders: '*',
     origin: ['http://localhost:3000', 'http://localhost:3001'],
+  });
+
+  app.enableVersioning({
+    type: VersioningType.URI,
   });
 
   const configService = await app.get(ConfigService);
