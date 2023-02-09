@@ -1,27 +1,42 @@
+import { compareAsc, parseISO } from 'date-fns';
+
 export type Order = {
+  _id: string;
   props: {
-    id: string;
     recipient_id: string;
     traking_code: string;
-    date: Date;
+    date: string;
     name?: string;
-    status: string;
     isDeliveried: boolean;
   };
+  trakings: {
+    recipient_traking_created_at: string;
+    message: string;
+  }[];
 };
-
-type OrderModel = {
+type OrdermModel = {
   id: string;
   name?: string;
-  isDeliveried: boolean;
-  date: string;
+  traking_code: string;
   status: string;
+  date: string;
+  isDelivered: boolean;
 };
 
-export const parseOrder = ({ props }: Order): OrderModel => ({
-  name: props.name,
-  date: props.date as any,
-  isDeliveried: props.isDeliveried,
-  id: props.id,
-  status: props.status,
-});
+export const parseOrder = ({ props, _id, trakings }: Order): OrdermModel => {
+  const [traking] = trakings.sort((a, b) =>
+    compareAsc(
+      parseISO(a.recipient_traking_created_at),
+      parseISO(b.recipient_traking_created_at),
+    ),
+  );
+
+  return {
+    id: _id,
+    date: props.date,
+    isDelivered: props.isDeliveried,
+    name: props?.name || '',
+    status: traking.message || '',
+    traking_code: props.traking_code,
+  };
+};
