@@ -20,7 +20,7 @@ type OrderModel = {
 
 export const parseOrder = ({ props }: Order): OrderModel => ({
   name: props.name,
-  date: props.date.toISOString(),
+  date: props.date as any,
   isDeliveried: props.isDeliveried,
   id: props.id,
   status: props.status,
