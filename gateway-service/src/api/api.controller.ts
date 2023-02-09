@@ -1,7 +1,10 @@
-import { Body, Controller, Get, Param, Patch } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { KafkaService } from '../messaging/kafka.service';
 import { DocumentModel, parseDocument } from './models/document.model';
 import { map } from 'rxjs/operators';
+import { CreateOrderDto } from './dto/create-order-.dto';
+import { RefreshOrderTrakingDto } from './dto/refresh-order-traking.dto';
+import { Order, parseOrder } from './models/order.model';
 
 @Controller({
   version: 'v1',
@@ -33,5 +36,29 @@ export class ApiController {
     return this.kafkaService
       .send('document.getById', { id })
       .pipe(map(({ document }) => parseDocument(document)));
+  }
+  @Post('/orders')
+  async createOrder(
+    @Body() { traking_code, recipient_id, name }: CreateOrderDto,
+  ) {
+    this.kafkaService.emit('traking.create-order', {
+      traking_code,
+      recipient_id,
+      name,
+    });
+  }
+
+  @Get('/orders/refresh-status/:order_id')
+  async refreshOrderTraking(@Param() { order_id }: RefreshOrderTrakingDto) {
+    this.kafkaService.emit('traking.refresh-order-traking', {
+      order_id,
+    });
+  }
+
+  @Get('/orders')
+  async findAllOrders() {
+    return this.kafkaService
+      .send('traking.find-all-orders', {})
+      .pipe(map((response: Order[]) => response.map(parseOrder)));
   }
 }

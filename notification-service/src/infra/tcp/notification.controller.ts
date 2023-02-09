@@ -53,9 +53,8 @@ export class NotificationController {
     const formattedDate = format(new Date(data.date), 'dd/MM/yyyy HH:mm:ss');
 
     const content = ` 
-    
-     📦   O status do seu pacote foi alterado ${
-       data.name ? `*${data.name}*` : ''
+     📦   O status do seu pacote foi alterado: ${
+       data.name ? `**${data.name}**` : ''
      }
    
      ✍️   Pacote: **${data.traking_code}** 
