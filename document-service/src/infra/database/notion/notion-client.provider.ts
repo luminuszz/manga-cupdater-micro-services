@@ -1,15 +1,16 @@
-import { Provider } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Client } from '@notionhq/client';
+import { Client as NotionClient } from '@notionhq/client';
 
-export const NOTION_CLIENT_PROVIDER_TOKEN = 'NOTION_CLIENT_PROVIDER_TOKEN';
+@Injectable()
+export class NotionClientProvider extends NotionClient {
+  public readonly databaseId: string;
 
-export const NotionClientProvider: Provider = {
-  provide: NOTION_CLIENT_PROVIDER_TOKEN,
-  useFactory: (config: ConfigService<Env>) => {
-    return new Client({
-      auth: config.get('NOTION_AUTH_TOKEN'),
+  constructor(private readonly configService: ConfigService) {
+    super({
+      auth: configService.get('NOTION_AUTH_TOKEN'),
     });
-  },
-  inject: [ConfigService],
-};
+
+    this.databaseId = configService.get('NOTION_DATABASE_ID');
+  }
+}

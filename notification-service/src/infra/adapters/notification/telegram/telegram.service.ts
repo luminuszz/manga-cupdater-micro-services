@@ -21,7 +21,10 @@ export class TelegramService implements NotificationProvider, OnModuleDestroy {
       .replaceAll('-', '\\-')
       .replaceAll('(', '\\(')
       .replaceAll(')', '\\)')
-      .replaceAll('.', '\\.');
+      .replaceAll('.', '\\.')
+      .replaceAll('!', '\\!')
+      .replaceAll('>', '\\>')
+      .replaceAll('<', '\\<');
   }
 
   async sendNotification({

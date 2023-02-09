@@ -1,14 +1,15 @@
 import { DocumentRepository } from '@core/repositories/document.repository';
-import { Inject, Injectable } from '@nestjs/common';
-import { NOTION_CLIENT_PROVIDER_TOKEN } from '@infra/database/notion/notion-client.provider';
-import { Client } from '@notionhq/client';
+import { Injectable } from '@nestjs/common';
+import { NotionClientProvider } from '@infra/database/notion/notion-client.provider';
+
 import { NotionPage } from '@infra/database/notion/dto/notion-page.dto';
 import { NotionMapper } from '@infra/database/notion/mappers/notion-mapper';
 import { Document } from '@core/entities/document.entitiy';
-import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class NotionDocumentRepository implements DocumentRepository {
+  constructor(private readonly notion: NotionClientProvider) {}
+
   async findDocumentByRecipentId(
     recipientId: string,
   ): Promise<Document | null> {
@@ -18,12 +19,6 @@ export class NotionDocumentRepository implements DocumentRepository {
 
     return NotionMapper.toDomain(response as NotionPage);
   }
-  constructor(
-    @Inject(NOTION_CLIENT_PROVIDER_TOKEN)
-    private readonly notion: Client,
-
-    private readonly configService: ConfigService<Env>,
-  ) {}
 
   public async findDocumentById(id: string): Promise<Document | null> {
     const notionPage = (await this.notion.pages.retrieve({
@@ -52,7 +47,7 @@ export class NotionDocumentRepository implements DocumentRepository {
     Document[]
   > {
     const response = await this.notion.databases.query({
-      database_id: this.configService.get('NOTION_DATABASE_ID'),
+      database_id: this.notion.databaseId,
       filter: {
         and: [
           {
@@ -78,7 +73,7 @@ export class NotionDocumentRepository implements DocumentRepository {
 
   async findDocumentByName(name: string): Promise<Document | null> {
     const { results } = await this.notion.databases.query({
-      database_id: this.configService.get('NOTION_DATABASE_ID'),
+      database_id: this.notion.databaseId,
 
       filter: {
         property: 'Name',
@@ -95,7 +90,7 @@ export class NotionDocumentRepository implements DocumentRepository {
 
   async findaAllDocuments(): Promise<Document[]> {
     const response = await this.notion.databases.query({
-      database_id: this.configService.get('NOTION_DATABASE_ID'),
+      database_id: this.notion.databaseId,
       filter: {
         property: 'Name',
         title: {
@@ -111,7 +106,7 @@ export class NotionDocumentRepository implements DocumentRepository {
 
   async findAllDocumentWithStatusFollowing(): Promise<Document[]> {
     const response = await this.notion.databases.query({
-      database_id: this.configService.get('NOTION_DATABASE_ID'),
+      database_id: this.notion.databaseId,
       filter: {
         property: 'status',
         select: {

@@ -1,4 +1,3 @@
-import 'dotenv/config';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
@@ -17,6 +16,7 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
       },
     },
   );
+
   app.useGlobalPipes(new ValidationPipe());
 
   await app.listen();

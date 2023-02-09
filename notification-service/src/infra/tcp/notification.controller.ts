@@ -16,6 +16,7 @@ export interface UpdateOrderStatusTrakingEvent {
   message: string;
   date: string;
   recipient_id: string;
+  name?: string;
 }
 
 @Controller()
@@ -53,7 +54,9 @@ export class NotificationController {
 
     const content = ` 
     
-     📦   O status do seu pacote foi alterado 
+     📦   O status do seu pacote foi alterado ${
+       data.name ? `*${data.name}*` : ''
+     }
    
      ✍️   Pacote: **${data.traking_code}** 
      🚚   Status: **${data.message}**

@@ -15,9 +15,7 @@ import { MarkDocumentToRead } from '@core/useCases/mark-document-to-read';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }),
+    ConfigModule.forRoot({ isGlobal: true }),
     MessagingModule,
     DatabaseModule,
     NotionModule,
