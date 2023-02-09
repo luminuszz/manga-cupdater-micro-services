@@ -37,7 +37,7 @@ export class ApiController {
       .send('document.getById', { id })
       .pipe(map(({ document }) => parseDocument(document)));
   }
-  @Post('/orders')
+  @Post('orders')
   async createOrder(
     @Body() { traking_code, recipient_id, name }: CreateOrderDto,
   ) {
@@ -48,14 +48,14 @@ export class ApiController {
     });
   }
 
-  @Get('/orders/refresh-status/:order_id')
+  @Get('orders/refresh-status/:order_id')
   async refreshOrderTraking(@Param() { order_id }: RefreshOrderTrakingDto) {
     this.kafkaService.emit('traking.refresh-order-traking', {
       order_id,
     });
   }
 
-  @Get('/orders')
+  @Get('orders')
   async findAllOrders() {
     return this.kafkaService
       .send('traking.find-all-orders', {})
