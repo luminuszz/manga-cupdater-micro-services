@@ -6,8 +6,8 @@ import { Order, parseOrder } from './models/order.model';
 import { KafkaService } from '../messaging/kafka.service';
 
 @Controller({
-  version: 'v1',
-  path: 'api/orders',
+  version: '1',
+  path: 'orders',
 })
 export class OrderController {
   constructor(private readonly kafkaService: KafkaService) {}

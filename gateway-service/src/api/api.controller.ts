@@ -2,13 +2,10 @@ import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { KafkaService } from '../messaging/kafka.service';
 import { DocumentModel, parseDocument } from './models/document.model';
 import { map } from 'rxjs/operators';
-import { CreateOrderDto } from './dto/create-order-.dto';
-import { RefreshOrderTrakingDto } from './dto/refresh-order-traking.dto';
-import { Order, parseOrder } from './models/order.model';
 
 @Controller({
-  version: 'v1',
-  path: 'api/commics',
+  version: '1',
+  path: 'commics',
 })
 export class ApiController {
   constructor(private readonly kafkaService: KafkaService) {}
