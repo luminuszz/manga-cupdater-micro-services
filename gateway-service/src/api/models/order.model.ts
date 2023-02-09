@@ -1,11 +1,13 @@
 export type Order = {
-  id: string;
-  recipient_id: string;
-  traking_code: string;
-  date: Date;
-  name?: string;
-  status: string;
-  isDeliveried: boolean;
+  props: {
+    id: string;
+    recipient_id: string;
+    traking_code: string;
+    date: Date;
+    name?: string;
+    status: string;
+    isDeliveried: boolean;
+  };
 };
 
 type OrderModel = {
@@ -16,10 +18,10 @@ type OrderModel = {
   status: string;
 };
 
-export const parseOrder = (order: Order): OrderModel => ({
-  name: order.name,
-  date: order.date.toISOString(),
-  isDeliveried: order.isDeliveried,
-  id: order.id,
-  status: order.status,
+export const parseOrder = ({ props }: Order): OrderModel => ({
+  name: props.name,
+  date: props.date.toISOString(),
+  isDeliveried: props.isDeliveried,
+  id: props.id,
+  status: props.status,
 });
