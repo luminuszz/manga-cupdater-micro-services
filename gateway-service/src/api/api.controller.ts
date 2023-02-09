@@ -8,19 +8,19 @@ import { Order, parseOrder } from './models/order.model';
 
 @Controller({
   version: 'v1',
-  path: 'api',
+  path: 'api/commics',
 })
 export class ApiController {
   constructor(private readonly kafkaService: KafkaService) {}
 
-  @Get('commics/find-all-unread')
+  @Get('find-all-unread')
   async findAllUnread() {
     return this.kafkaService
       .send('document.findAllWithUnfollowStatus', {})
       .pipe(map((response: DocumentModel[]) => response.map(parseDocument)));
   }
 
-  @Patch('commics/:id/update')
+  @Patch(':id/update')
   async updateCommicChpaterStatus(
     @Param('id') id: string,
     @Body('chapter') chapter?: number,
@@ -31,34 +31,10 @@ export class ApiController {
     });
   }
 
-  @Get('commics/:id')
+  @Get(':id')
   async getCommic(@Param('id') id: string) {
     return this.kafkaService
       .send('document.getById', { id })
       .pipe(map(({ document }) => parseDocument(document)));
-  }
-  @Post('orders')
-  async createOrder(
-    @Body() { traking_code, recipient_id, name }: CreateOrderDto,
-  ) {
-    this.kafkaService.emit('traking.create-order', {
-      traking_code,
-      recipient_id,
-      name,
-    });
-  }
-
-  @Get('orders/refresh-status/:order_id')
-  async refreshOrderTraking(@Param() { order_id }: RefreshOrderTrakingDto) {
-    this.kafkaService.emit('traking.refresh-order-traking', {
-      order_id,
-    });
-  }
-
-  @Get('orders')
-  async findAllOrders() {
-    return this.kafkaService
-      .send('traking.find-all-orders', {})
-      .pipe(map((response: Order[]) => response.map(parseOrder)));
   }
 }
