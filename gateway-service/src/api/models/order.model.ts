@@ -36,7 +36,7 @@ export const parseOrder = ({ props, _id, trakings }: Order): OrdermModel => {
     date: props.date,
     isDelivered: props.isDeliveried,
     name: props?.name || '',
-    status: traking.message || '',
+    status: traking?.message || '',
     traking_code: props.traking_code,
   };
 };
