@@ -7,7 +7,7 @@ export type Order = {
     traking_code: string;
     date: string;
     name?: string;
-    isDeliveried: boolean;
+    isDelivered: boolean;
   };
   trakings: {
     recipient_traking_created_at: string;
@@ -34,7 +34,7 @@ export const parseOrder = ({ props, _id, trakings }: Order): OrdermModel => {
   return {
     id: _id,
     date: props.date,
-    isDelivered: props.isDeliveried,
+    isDelivered: props.isDelivered,
     name: props?.name || '',
     status: traking?.message || '',
     traking_code: props.traking_code,
