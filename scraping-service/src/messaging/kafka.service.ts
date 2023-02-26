@@ -21,6 +21,8 @@ export class KafkaService
   }
 
   async onModuleInit() {
+    this.subscribeToResponseOf('document.findAllUnread');
+
     await this.connect();
   }
 

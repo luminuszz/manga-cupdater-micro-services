@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bull';
 import { CheckWithExistsNewChapterDto } from './queue/jobs/find-comic-cap-by-url';
 import { Queue } from 'bull';
-import { isNumber } from 'lodash';
 import { KafkaService } from './messaging/kafka.service';
 
 type NotifyCapNewCapEvent = {
@@ -24,7 +23,9 @@ export class ScrapingService {
   ) {}
 
   public async findComicCapByUrl(data: CheckWithExistsNewChapterDto) {
-    await this.findComicCapByUrlQueue.add(data);
+    await this.findComicCapByUrlQueue.add(data, {
+      removeOnComplete: true,
+    });
   }
 
   public async notifyNewChapter(data: NotifyCapNewCapEvent) {

@@ -2,7 +2,7 @@ import {
   Document as PrismaDocument,
   Status as PrismaStatus,
 } from '@prisma/client';
-import { Document, Status } from '../../../../core/entities/document.entitiy';
+import { Document, Status } from '@core/entities/document.entitiy';
 
 export class PrismaMapper {
   static toDomain(prismaDocument: PrismaDocument): Document {

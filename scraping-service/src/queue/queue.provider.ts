@@ -11,6 +11,10 @@ export const BullModuleConfig: SharedBullAsyncConfiguration = {
 
     defaultJobOptions: {
       removeOnComplete: true,
+      backoff: {
+        type: 'exponential',
+        delay: 2000,
+      },
     },
   }),
   inject: [ConfigService],
