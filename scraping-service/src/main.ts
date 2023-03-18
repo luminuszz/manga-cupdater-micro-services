@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { AppModule } from './app.module';
 
 (async () => {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
@@ -10,11 +10,21 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
       options: {
         client: {
           clientId: 'scraping-service',
+
+          brokers: [process.env.KAFKA_CONNECT_URL],
           retry: {
-            retries: 2,
+            retries: 5,
+            maxRetryTime: 5000,
+            multiplier: 2,
           },
 
-          brokers: [process.env.KAFKA_CONECT_URL],
+          ssl: true,
+          sasl: {
+            username: process.env.KAFKA_USERNAME,
+            password: process.env.KAFKA_PASSWORD,
+            mechanism: 'plain',
+          },
+          reauthenticationThreshold: 45000,
         },
 
         consumer: {

@@ -1,12 +1,12 @@
-import { DocumentRepository } from '@core/repositories/document.repository';
 import { Document } from '@core/entities/document.entitiy';
-import { Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from '@infra/database/prisma/prisma.service';
-import {
-  Status as PrismaStatus,
-  Document as PrismaDocument,
-} from '@prisma/client';
+import { DocumentRepository } from '@core/repositories/document.repository';
 import { PrismaMapper } from '@infra/database/prisma/mappers/prisma.mapper';
+import { PrismaService } from '@infra/database/prisma/prisma.service';
+import { Injectable, Logger } from '@nestjs/common';
+import {
+  Document as PrismaDocument,
+  Status as PrismaStatus,
+} from '@prisma/client';
 import { omit } from 'lodash';
 
 @Injectable()

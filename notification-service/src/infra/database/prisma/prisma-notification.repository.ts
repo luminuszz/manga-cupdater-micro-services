@@ -1,10 +1,10 @@
+import { Notification } from '@app/entities/notification';
 import {
   FindNotificationByNameAndCaptionInput,
   NotificationRepository,
 } from '@app/repositories/notification-repository';
-import { Notification } from '@app/entities/notification';
-import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@infra/database/prisma/prisma.service';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class PrismaNotificationRepository implements NotificationRepository {
@@ -18,6 +18,7 @@ export class PrismaNotificationRepository implements NotificationRepository {
         content: notification.content,
         recipient_id: notification.recipient_id,
         type: 'Manga',
+        created_at: notification.created_at,
       },
     });
   }

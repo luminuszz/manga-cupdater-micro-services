@@ -6,7 +6,12 @@ COPY package.json .
 
 RUN yarn install
 
+RUN yarn global add pm2
+
 COPY . ./
 
+RUN npx prisma generate
 
-CMD ["yarn", "start:dev"]
+RUN yarn build
+
+CMD ["pm2-runtime", "dist/src/main.js"]

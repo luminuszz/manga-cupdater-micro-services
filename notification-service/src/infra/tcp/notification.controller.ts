@@ -1,8 +1,8 @@
-import { Controller, Logger } from '@nestjs/common';
 import { SendNotification } from '@app/useCases/send-notification';
+import { Controller, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { format } from 'date-fns';
-import { ConfigService } from '@nestjs/config';
 
 export type ChapterUpdateEvent = {
   newChapter: string | number;
@@ -18,6 +18,12 @@ export interface UpdateOrderStatusTrakingEvent {
   recipient_id: string;
   name?: string;
 }
+
+type ClassRoomTodayEvent = {
+  classroom: string[];
+  period: string;
+  matricula: number | string;
+};
 
 @Controller()
 export class NotificationController {
@@ -61,6 +67,28 @@ export class NotificationController {
      🚚   Status: **${data.message}**
      ⏳   Data: **${formattedDate}**
      
+    `;
+
+    await this.sendNotification.execute({
+      content,
+      recipient_id: '5887244798',
+    });
+  }
+
+  @EventPattern('notification.classroom-today')
+  async handleClassRoomTodayMessage(@Payload() data: ClassRoomTodayEvent) {
+    this.logger.log(`recieved order updated event  -> ${data.period}`);
+
+    const content = `
+    ** ⏳⏳⏳ AULAS DE HOJE  ⏳⏳⏳ **
+    
+      Primeira aula: ${data.classroom[0]}
+      
+      Segunda aula: ${data.classroom[1]}
+      
+      Periodo: **${data.period}**
+      
+      Matricula: **${data.matricula}**
     `;
 
     await this.sendNotification.execute({

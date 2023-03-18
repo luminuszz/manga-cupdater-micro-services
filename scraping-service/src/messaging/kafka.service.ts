@@ -1,6 +1,6 @@
-import { ClientKafka } from '@nestjs/microservices';
 import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { ClientKafka } from '@nestjs/microservices';
 
 @Injectable()
 export class KafkaService
@@ -11,7 +11,21 @@ export class KafkaService
     super({
       client: {
         clientId: 'scraping-service-client',
-        brokers: [config.get<string>('KAFKA_CONECT_URL')],
+        brokers: [config.get<string>('KAFKA_CONNECT_URL')],
+        connectionTimeout: 5000,
+        ssl: true,
+        sasl: {
+          username: config.get<string>('KAFKA_USERNAME'),
+          password: config.get<string>('KAFKA_PASSWORD'),
+          mechanism: 'plain',
+        },
+        retry: {
+          retries: 5,
+          multiplier: 2,
+          restartOnFailure: async (e) => {
+            return true;
+          },
+        },
       },
 
       consumer: {

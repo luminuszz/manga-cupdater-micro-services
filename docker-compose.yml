@@ -3,17 +3,16 @@ services:
 
   document_service:
     environment:
-      - KAFKA_CONECT_URL=${KAFKA_CONECT_URL}
       - NOTION_AUTH_TOKEN=${NOTION_AUTH_TOKEN}
       - NOTION_DATABASE_ID=${NOTION_DATABASE_ID}
+      - KAFKA_CONNECT_URL=${KAFKA_CONNECT_URL}
+      - KAFKA_PASSWORD=${KAFKA_PASSWORD}
+      - KAFKA_USERNAME=${KAFKA_USERNAME}
     container_name: chapter_updater_document_service
     build:
         context: document-service
         dockerfile: ./dockerfile
     restart: always
-
-
-
   scraping_service:
     build:
         context: scraping-service
@@ -23,13 +22,24 @@ services:
       - REDIS_HOST=${REDIS_HOST}
       - REDIS_PORT=${REDIS_PORT}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
-      - KAFKA_CONECT_URL=${KAFKA_CONECT_URL}
+      - KAFKA_CONNECT_URL=${KAFKA_CONNECT_URL}
+      - KAFKA_PASSWORD=${KAFKA_PASSWORD}
+      - KAFKA_USERNAME=${KAFKA_USERNAME}
     restart: always
 
 
   notification_service:
    container_name: chapter_updater_notificaion_service
    restart: always
+   environment:
+      - KAFKA_CONNECT_URL=${KAFKA_CONNECT_URL}
+      - KAFKA_PASSWORD=${KAFKA_PASSWORD}
+      - KAFKA_USERNAME=${KAFKA_USERNAME}
+      - DATABASE_URL=${DATABASE_URL}
+      - TELEGRAM_APP_ID=${TELEGRAM_APP_ID}
+      - TELEGRANM_API_HASH=${TELEGRANM_API_HASH}
+      - TELEGRAM_NOTIFICATION_BOT=${TELEGRAM_NOTIFICATION_BOT}
+      - TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID}
 
    build:
          context: notification-service
