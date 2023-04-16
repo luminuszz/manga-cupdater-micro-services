@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
-import { KafkaService } from './kafka.service';
 import { ConfigModule } from '@nestjs/config';
+import { KafkaProvider } from './kafka.provider';
+import { MessagingService } from './messaging.service';
 
 @Module({
   imports: [ConfigModule.forRoot()],
-  providers: [KafkaService],
-  exports: [KafkaService],
+  providers: [KafkaProvider, MessagingService],
+  exports: [MessagingService, KafkaProvider],
 })
 export class MessagingModule {}

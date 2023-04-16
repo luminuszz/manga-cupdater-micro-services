@@ -17,12 +17,14 @@ export interface UpdateOrderStatusTrakingEvent {
   date: string;
   recipient_id: string;
   name?: string;
+  description?: string;
 }
 
 type ClassRoomTodayEvent = {
-  classroom: string[];
+  firstClass: string;
+  secondClass: string;
   period: string;
-  matricula: number | string;
+  matricula: string | number;
 };
 
 @Controller()
@@ -66,6 +68,9 @@ export class NotificationController {
      ✍️   Pacote: **${data.traking_code}** 
      🚚   Status: **${data.message}**
      ⏳   Data: **${formattedDate}**
+
+
+     ✍️  Descrição: **${data?.description}**
      
     `;
 
@@ -77,18 +82,19 @@ export class NotificationController {
 
   @EventPattern('notification.classroom-today')
   async handleClassRoomTodayMessage(@Payload() data: ClassRoomTodayEvent) {
-    this.logger.log(`recieved order updated event  -> ${data.period}`);
+    this.logger.log(`recieved classRoom updated event  -> ${data.period}`);
 
     const content = `
     ** ⏳⏳⏳ AULAS DE HOJE  ⏳⏳⏳ **
     
-      Primeira aula: ${data.classroom[0]}
+      Primeira aula: ${data.firstClass}
       
-      Segunda aula: ${data.classroom[1]}
+      Segunda aula: ${data.secondClass}
       
       Periodo: **${data.period}**
       
       Matricula: **${data.matricula}**
+
     `;
 
     await this.sendNotification.execute({

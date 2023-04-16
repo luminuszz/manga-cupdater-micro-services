@@ -6,12 +6,12 @@ import {
   Processor,
 } from '@nestjs/bull';
 
+import { Logger } from '@nestjs/common';
+import { Job } from 'bull';
+import { find } from 'lodash';
 import puppeteer from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
-import { find } from 'lodash';
-import { Job } from 'bull';
-import { Logger } from '@nestjs/common';
-import { ScrapingService } from '../../scraping.service';
+import { MessagingService } from 'src/messaging/messaging.service';
 
 export type CheckWithExistsNewChapterDto = {
   id: string;
@@ -38,7 +38,7 @@ export const findComicCapByUrlJobToken = 'find-comic-cap-by-url';
 export class FindComicCapByUrlJob {
   private readonly _logger = new Logger(FindComicCapByUrlJob.name);
 
-  constructor(private readonly scrapingService: ScrapingService) {}
+  constructor(private readonly messagingService: MessagingService) {}
 
   async initializeBrowser() {
     const args: string[] = [
@@ -147,7 +147,7 @@ export class FindComicCapByUrlJob {
       this._logger.log(
         `New chapter found for ${name} - ${url} -> ${newChapter}`,
       );
-      await this.scrapingService.notifyNewChapter({
+      await this.messagingService.notifyNewChapter({
         id,
         url,
         name,

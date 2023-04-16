@@ -1,20 +1,20 @@
-import { randomUUID } from 'node:crypto';
+import { ObjectId } from 'bson';
 
 export type NotificationProps = {
   recipient_id: string;
   read_at: Date | null | undefined;
-
   content: string;
+  created_at?: Date;
 };
 
 export class Notification {
   private readonly _id: string;
 
-  private readonly _created_at: Date;
-
   constructor(private readonly props: NotificationProps, id?: string) {
-    this._id = id || randomUUID();
-    this._created_at = new Date();
+    this._id = id || new ObjectId().toString('hex');
+    if (!this.props.created_at) {
+      this.props.created_at = new Date();
+    }
   }
 
   get recipient_id(): string {
@@ -37,6 +37,6 @@ export class Notification {
   }
 
   get created_at(): Date {
-    return this.created_at;
+    return this.props?.created_at;
   }
 }
